@@ -9,11 +9,12 @@ const RETROACTIVE_LIMIT_DAYS = 30;
 const CATEGORIES = [
   { value: 'DEEP_WORK', label: 'Deep Work', color: 'bg-primary-container' },
   { value: 'SHALLOW_WORK', label: 'Shallow', color: 'bg-secondary-container' },
+  { value: 'MEETING', label: 'Meeting', color: 'bg-teal-500' },
   { value: 'INTERRUPTION', label: 'Interruption', color: 'bg-error' },
   { value: 'PERSONAL_MISC', label: 'Personal', color: 'bg-tertiary-container' },
 ];
 
-const DEFAULT_TAGS = ['Meeting', 'Code Review', 'Debugging', 'Architecture', 'Mentoring', 'Admin'];
+const DEFAULT_TAGS = ['Code Review', 'Debugging', 'Architecture', 'Mentoring', 'Admin'];
 
 function parseDuration(label: string): number {
   const map: Record<string, number> = {

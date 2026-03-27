@@ -1,4 +1,4 @@
-export type CategoryType = 'DEEP_WORK' | 'SHALLOW_WORK' | 'INTERRUPTION' | 'PERSONAL_MISC';
+export type CategoryType = 'DEEP_WORK' | 'SHALLOW_WORK' | 'MEETING' | 'INTERRUPTION' | 'PERSONAL_MISC';
 
 export type InsightType = 'TREND' | 'THRESHOLD' | 'SUGGESTION';
 export type SeverityType = 'INFO' | 'WARNING';
@@ -10,6 +10,7 @@ export interface DailyLog {
   observations: string | null;
   totalDeepWork: number;
   totalShallowWork: number;
+  totalMeetings: number;
   totalInterruptions: number;
   totalPersonalMisc: number;
   isReconstructed: boolean;
@@ -45,6 +46,7 @@ export interface Insight {
 export interface TimeBreakdown {
   deepWork: number;
   shallowWork: number;
+  meetings: number;
   interruptions: number;
   personalMisc: number;
   total: number;

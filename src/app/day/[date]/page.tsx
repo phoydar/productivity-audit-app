@@ -4,7 +4,7 @@ import { useEffect, useState, use } from 'react';
 import { useRouter } from 'next/navigation';
 import { format, addDays, subDays, parseISO } from 'date-fns';
 import { ChevronLeft, ChevronRight, AlertTriangle } from 'lucide-react';
-import { EntryCard } from '@/components/day/entry-card';
+import { EntryCard, type EditPayload } from '@/components/day/entry-card';
 import { TimeBreakdown } from '@/components/day/time-breakdown';
 import { SummaryView } from '@/components/day/summary-view';
 import { QuickAdd } from '@/components/dashboard/quick-add';
@@ -26,6 +26,7 @@ interface DayLog {
   observations: string | null;
   totalDeepWork: number;
   totalShallowWork: number;
+  totalMeetings: number;
   totalInterruptions: number;
   totalPersonalMisc: number;
   isReconstructed: number;
@@ -75,6 +76,23 @@ export default function DayDetailPage({ params }: { params: Promise<{ date: stri
     if (!confirm('Delete this entry?')) return;
     await fetch(`/api/entries/${entryId}`, { method: 'DELETE' });
     await fetchLog();
+  }
+
+  async function handleEdit(entryId: string, data: EditPayload): Promise<boolean> {
+    try {
+      const res = await fetch(`/api/entries/${entryId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (res.ok) {
+        await fetchLog();
+        return true;
+      }
+      return false;
+    } catch {
+      return false;
+    }
   }
 
   const parsedDate = parseISO(date);
@@ -137,6 +155,7 @@ export default function DayDetailPage({ params }: { params: Promise<{ date: stri
                   <EntryCard
                     key={entry.id}
                     {...entry}
+                    onEdit={handleEdit}
                     onDelete={handleDelete}
                   />
                 ))
@@ -155,6 +174,7 @@ export default function DayDetailPage({ params }: { params: Promise<{ date: stri
                 <TimeBreakdown
                   deepWork={log?.totalDeepWork ?? 0}
                   shallowWork={log?.totalShallowWork ?? 0}
+                  meetings={log?.totalMeetings ?? 0}
                   interruptions={log?.totalInterruptions ?? 0}
                   personalMisc={log?.totalPersonalMisc ?? 0}
                 />

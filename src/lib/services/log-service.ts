@@ -61,6 +61,9 @@ export async function recalculateLogTotals(date: string) {
         case 'SHALLOW_WORK':
           acc.totalShallowWork += hours;
           break;
+        case 'MEETING':
+          acc.totalMeetings += hours;
+          break;
         case 'INTERRUPTION':
           acc.totalInterruptions += hours;
           break;
@@ -70,7 +73,7 @@ export async function recalculateLogTotals(date: string) {
       }
       return acc;
     },
-    { totalDeepWork: 0, totalShallowWork: 0, totalInterruptions: 0, totalPersonalMisc: 0 }
+    { totalDeepWork: 0, totalShallowWork: 0, totalMeetings: 0, totalInterruptions: 0, totalPersonalMisc: 0 }
   );
 
   await db

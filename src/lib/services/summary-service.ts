@@ -24,6 +24,9 @@ export async function generateSummary(date: string) {
         case 'SHALLOW_WORK':
           acc.shallowWork += hours;
           break;
+        case 'MEETING':
+          acc.meetings += hours;
+          break;
         case 'INTERRUPTION':
           acc.interruptions += hours;
           break;
@@ -34,7 +37,7 @@ export async function generateSummary(date: string) {
       acc.total += hours;
       return acc;
     },
-    { deepWork: 0, shallowWork: 0, interruptions: 0, personalMisc: 0, total: 0 }
+    { deepWork: 0, shallowWork: 0, meetings: 0, interruptions: 0, personalMisc: 0, total: 0 }
   );
 
   const totalHours = breakdown.total;
@@ -49,6 +52,7 @@ export async function generateSummary(date: string) {
   const categoryLabel = {
     deepWork: 'deep work',
     shallowWork: 'shallow work',
+    meetings: 'meetings',
     interruptions: 'interruptions',
     personalMisc: 'personal/misc tasks',
   }[topCategory[0]] ?? topCategory[0];
@@ -107,9 +111,10 @@ export async function getSummary(date: string) {
     timeBreakdown: {
       deepWork: log.totalDeepWork,
       shallowWork: log.totalShallowWork,
+      meetings: log.totalMeetings,
       interruptions: log.totalInterruptions,
       personalMisc: log.totalPersonalMisc,
-      total: log.totalDeepWork + log.totalShallowWork + log.totalInterruptions + log.totalPersonalMisc,
+      total: log.totalDeepWork + log.totalShallowWork + log.totalMeetings + log.totalInterruptions + log.totalPersonalMisc,
     },
     workLog: entries,
     generatedAt: log.generatedAt,

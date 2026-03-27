@@ -10,6 +10,7 @@ export const dailyLog = sqliteTable(
     observations: text('observations'),
     totalDeepWork: real('total_deep_work').default(0).notNull(),
     totalShallowWork: real('total_shallow_work').default(0).notNull(),
+    totalMeetings: real('total_meetings').default(0).notNull(),
     totalInterruptions: real('total_interruptions').default(0).notNull(),
     totalPersonalMisc: real('total_personal_misc').default(0).notNull(),
     isReconstructed: integer('is_reconstructed', { mode: 'boolean' }).default(false).notNull(),
@@ -34,7 +35,7 @@ export const logEntry = sqliteTable(
     task: text('task').notNull(),
     outcome: text('outcome').notNull(),
     durationMinutes: integer('duration_minutes').notNull(),
-    category: text('category', { enum: ['DEEP_WORK', 'SHALLOW_WORK', 'INTERRUPTION', 'PERSONAL_MISC'] }).notNull(),
+    category: text('category', { enum: ['DEEP_WORK', 'SHALLOW_WORK', 'MEETING', 'INTERRUPTION', 'PERSONAL_MISC'] }).notNull(),
     sortOrder: integer('sort_order').default(0).notNull(),
     isReconstructed: integer('is_reconstructed', { mode: 'boolean' }).default(false).notNull(),
     createdAt: text('created_at')
@@ -95,7 +96,7 @@ export const todo = sqliteTable(
   {
     id: text('id').primaryKey(),
     task: text('task').notNull(),
-    category: text('category', { enum: ['DEEP_WORK', 'SHALLOW_WORK', 'INTERRUPTION', 'PERSONAL_MISC'] }).notNull(),
+    category: text('category', { enum: ['DEEP_WORK', 'SHALLOW_WORK', 'MEETING', 'INTERRUPTION', 'PERSONAL_MISC'] }).notNull(),
     estimatedMinutes: integer('estimated_minutes').notNull(),
     priority: integer('priority').default(0).notNull(), // 0=normal, 1=high
     tags: text('tags'), // JSON array string

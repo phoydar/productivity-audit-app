@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const categorySchema = z.enum(['DEEP_WORK', 'SHALLOW_WORK', 'INTERRUPTION', 'PERSONAL_MISC']);
+export const categorySchema = z.enum(['DEEP_WORK', 'SHALLOW_WORK', 'MEETING', 'INTERRUPTION', 'PERSONAL_MISC']);
 
 export const createEntrySchema = z.object({
   task: z.string().min(10, 'Task description must be at least 10 characters'),

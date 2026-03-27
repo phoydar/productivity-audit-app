@@ -5,6 +5,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 interface TimeBreakdownProps {
   deepWork: number;
   shallowWork: number;
+  meetings: number;
   interruptions: number;
   personalMisc: number;
 }
@@ -12,6 +13,7 @@ interface TimeBreakdownProps {
 const COLORS = {
   deepWork: '#2563eb',
   shallowWork: '#fea619',
+  meetings: '#0d9488',
   interruptions: '#ba1a1a',
   personalMisc: '#7d4ce7',
 };
@@ -19,16 +21,18 @@ const COLORS = {
 const LABELS = {
   deepWork: 'Deep Work',
   shallowWork: 'Shallow Work',
+  meetings: 'Meetings',
   interruptions: 'Interruptions',
   personalMisc: 'Personal',
 };
 
-export function TimeBreakdown({ deepWork, shallowWork, interruptions, personalMisc }: TimeBreakdownProps) {
-  const total = deepWork + shallowWork + interruptions + personalMisc;
+export function TimeBreakdown({ deepWork, shallowWork, meetings, interruptions, personalMisc }: TimeBreakdownProps) {
+  const total = deepWork + shallowWork + meetings + interruptions + personalMisc;
 
   const data = [
     { name: 'Deep Work', value: deepWork, color: COLORS.deepWork },
     { name: 'Shallow Work', value: shallowWork, color: COLORS.shallowWork },
+    { name: 'Meetings', value: meetings, color: COLORS.meetings },
     { name: 'Interruptions', value: interruptions, color: COLORS.interruptions },
     { name: 'Personal', value: personalMisc, color: COLORS.personalMisc },
   ].filter((d) => d.value > 0);
@@ -74,6 +78,7 @@ export function TimeBreakdown({ deepWork, shallowWork, interruptions, personalMi
         {[
           { label: 'Deep Work', value: deepWork, color: 'bg-primary-container' },
           { label: 'Shallow Work', value: shallowWork, color: 'bg-secondary-container' },
+          { label: 'Meetings', value: meetings, color: 'bg-teal-500' },
           { label: 'Interruptions', value: interruptions, color: 'bg-error' },
           { label: 'Personal', value: personalMisc, color: 'bg-tertiary-container' },
         ].map((item) => (

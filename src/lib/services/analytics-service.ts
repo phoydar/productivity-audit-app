@@ -7,6 +7,7 @@ export interface WeeklyBreakdown {
   date: string;
   deepWork: number;
   shallowWork: number;
+  meetings: number;
   interruptions: number;
   personalMisc: number;
   total: number;
@@ -16,6 +17,7 @@ export interface TrendData {
   currentWeek: {
     avgDeepWork: number;
     avgShallowWork: number;
+    avgMeetings: number;
     avgInterruptions: number;
     avgPersonalMisc: number;
     totalDays: number;
@@ -23,6 +25,7 @@ export interface TrendData {
   previousWeeks: {
     avgDeepWork: number;
     avgShallowWork: number;
+    avgMeetings: number;
     avgInterruptions: number;
     avgPersonalMisc: number;
     totalDays: number;
@@ -30,6 +33,7 @@ export interface TrendData {
   deltas: {
     deepWork: number;
     shallowWork: number;
+    meetings: number;
     interruptions: number;
     personalMisc: number;
   };
@@ -49,9 +53,10 @@ export async function getWeeklyBreakdown(): Promise<WeeklyBreakdown[]> {
     date: log.logDate,
     deepWork: log.totalDeepWork ?? 0,
     shallowWork: log.totalShallowWork ?? 0,
+    meetings: log.totalMeetings ?? 0,
     interruptions: log.totalInterruptions ?? 0,
     personalMisc: log.totalPersonalMisc ?? 0,
-    total: (log.totalDeepWork ?? 0) + (log.totalShallowWork ?? 0) + (log.totalInterruptions ?? 0) + (log.totalPersonalMisc ?? 0),
+    total: (log.totalDeepWork ?? 0) + (log.totalShallowWork ?? 0) + (log.totalMeetings ?? 0) + (log.totalInterruptions ?? 0) + (log.totalPersonalMisc ?? 0),
   }));
 }
 
@@ -82,6 +87,7 @@ export async function getTrends(weeks: number = 4): Promise<TrendData> {
       return {
         avgDeepWork: 0,
         avgShallowWork: 0,
+        avgMeetings: 0,
         avgInterruptions: 0,
         avgPersonalMisc: 0,
         totalDays: 0,
@@ -90,6 +96,7 @@ export async function getTrends(weeks: number = 4): Promise<TrendData> {
     return {
       avgDeepWork: logs.reduce((s, l) => s + (l.totalDeepWork ?? 0), 0) / n,
       avgShallowWork: logs.reduce((s, l) => s + (l.totalShallowWork ?? 0), 0) / n,
+      avgMeetings: logs.reduce((s, l) => s + (l.totalMeetings ?? 0), 0) / n,
       avgInterruptions: logs.reduce((s, l) => s + (l.totalInterruptions ?? 0), 0) / n,
       avgPersonalMisc: logs.reduce((s, l) => s + (l.totalPersonalMisc ?? 0), 0) / n,
       totalDays: n,
@@ -105,6 +112,7 @@ export async function getTrends(weeks: number = 4): Promise<TrendData> {
     deltas: {
       deepWork: current.avgDeepWork - previous.avgDeepWork,
       shallowWork: current.avgShallowWork - previous.avgShallowWork,
+      meetings: current.avgMeetings - previous.avgMeetings,
       interruptions: current.avgInterruptions - previous.avgInterruptions,
       personalMisc: current.avgPersonalMisc - previous.avgPersonalMisc,
     },

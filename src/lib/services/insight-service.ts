@@ -24,7 +24,7 @@ export async function generateInsights(fromDate: string, toDate: string) {
   const avgTotal =
     logs.reduce(
       (s, l) =>
-        s + (l.totalDeepWork ?? 0) + (l.totalShallowWork ?? 0) + (l.totalInterruptions ?? 0) + (l.totalPersonalMisc ?? 0),
+        s + (l.totalDeepWork ?? 0) + (l.totalShallowWork ?? 0) + (l.totalMeetings ?? 0) + (l.totalInterruptions ?? 0) + (l.totalPersonalMisc ?? 0),
       0
     ) / logs.length;
   const interruptPct = avgTotal > 0 ? (avgInterruptions / avgTotal) * 100 : 0;

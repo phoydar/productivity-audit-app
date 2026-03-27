@@ -9,6 +9,7 @@ interface WeekDay {
   date: string;
   deepWork: number;
   shallowWork: number;
+  meetings: number;
   interruptions: number;
   personalMisc: number;
 }
@@ -33,22 +34,23 @@ export function WeekOverview() {
               date,
               deepWork: existing?.deepWork ?? 0,
               shallowWork: existing?.shallowWork ?? 0,
+              meetings: existing?.meetings ?? 0,
               interruptions: existing?.interruptions ?? 0,
               personalMisc: existing?.personalMisc ?? 0,
             };
           });
           setData(week);
         } else {
-          setData(DAY_LABELS.map((label) => ({ day: label, date: '', deepWork: 0, shallowWork: 0, interruptions: 0, personalMisc: 0 })));
+          setData(DAY_LABELS.map((label) => ({ day: label, date: '', deepWork: 0, shallowWork: 0, meetings: 0, interruptions: 0, personalMisc: 0 })));
         }
       } catch {
-        setData(DAY_LABELS.map((label) => ({ day: label, date: '', deepWork: 0, shallowWork: 0, interruptions: 0, personalMisc: 0 })));
+        setData(DAY_LABELS.map((label) => ({ day: label, date: '', deepWork: 0, shallowWork: 0, meetings: 0, interruptions: 0, personalMisc: 0 })));
       }
     }
     fetchWeek();
   }, []);
 
-  const hasData = data.some((d) => d.deepWork + d.shallowWork + d.interruptions + d.personalMisc > 0);
+  const hasData = data.some((d) => d.deepWork + d.shallowWork + d.meetings + d.interruptions + d.personalMisc > 0);
 
   return (
     <div className="lg:col-span-2 bg-surface-container-lowest p-8 rounded-lg">
@@ -60,6 +62,7 @@ export function WeekOverview() {
         <div className="flex gap-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">
           <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-primary-container" />Deep</div>
           <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-secondary-container" />Shallow</div>
+          <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-teal-500" />Meetings</div>
           <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-error" />Interruptions</div>
           <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-tertiary-container" />Misc</div>
         </div>
@@ -92,6 +95,7 @@ export function WeekOverview() {
             />
             <Bar dataKey="deepWork" name="Deep Work" stackId="a" fill="#2563eb" radius={[0, 0, 0, 0]} />
             <Bar dataKey="shallowWork" name="Shallow" stackId="a" fill="#fea619" />
+            <Bar dataKey="meetings" name="Meetings" stackId="a" fill="#0d9488" />
             <Bar dataKey="interruptions" name="Interruptions" stackId="a" fill="#ba1a1a" />
             <Bar dataKey="personalMisc" name="Misc" stackId="a" fill="#7d4ce7" radius={[4, 4, 0, 0]} />
           </BarChart>

@@ -6,6 +6,7 @@ import { Check, Plus, X, CircleDot, Trash2, ChevronDown, ChevronUp } from 'lucid
 const CATEGORIES = [
   { value: 'DEEP_WORK', label: 'Deep', color: 'bg-primary-container' },
   { value: 'SHALLOW_WORK', label: 'Shallow', color: 'bg-secondary-container' },
+  { value: 'MEETING', label: 'Meeting', color: 'bg-teal-500' },
   { value: 'INTERRUPTION', label: 'Interruption', color: 'bg-error' },
   { value: 'PERSONAL_MISC', label: 'Personal', color: 'bg-tertiary-container' },
 ];

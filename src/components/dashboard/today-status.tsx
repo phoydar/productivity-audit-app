@@ -24,7 +24,7 @@ export function TodayStatus() {
           const { log } = await res.json();
           setData({
             entryCount: log?.entries?.length ?? 0,
-            totalHours: (log?.totalDeepWork ?? 0) + (log?.totalShallowWork ?? 0) + (log?.totalInterruptions ?? 0) + (log?.totalPersonalMisc ?? 0),
+            totalHours: (log?.totalDeepWork ?? 0) + (log?.totalShallowWork ?? 0) + (log?.totalMeetings ?? 0) + (log?.totalInterruptions ?? 0) + (log?.totalPersonalMisc ?? 0),
             deepWorkHours: log?.totalDeepWork ?? 0,
             deepWorkTarget: 3,
             expectedHours: 8,
