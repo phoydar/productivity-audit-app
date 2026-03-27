@@ -1,0 +1,166 @@
+2026-03-27T00:16:15.334270896Z [inf]  Mounting volume on: /var/lib/containers/railwayapp/bind-mounts/59869c42-8e25-4148-bcbc-fa122c7de331/vol_wffhcwy0116wto93
+2026-03-27T00:16:15.334634601Z [inf]  Starting Container
+2026-03-27T00:16:16.036860495Z [err]  
+2026-03-27T00:16:16.036861290Z [err]  Node.js v20.20.2
+2026-03-27T00:16:16.036874813Z [err]  node:internal/modules/cjs/loader:1210
+2026-03-27T00:16:16.036882227Z [err]    ^
+2026-03-27T00:16:16.036886288Z [err]    throw err;
+2026-03-27T00:16:16.036887212Z [err]      at node:internal/main/run_main_module:28:49 {
+2026-03-27T00:16:16.036895899Z [err]    code: 'MODULE_NOT_FOUND',
+2026-03-27T00:16:16.036901424Z [err]  node:internal/modules/cjs/loader:1210
+2026-03-27T00:16:16.036903130Z [err]    code: 'MODULE_NOT_FOUND',
+2026-03-27T00:16:16.036906141Z [err]    requireStack: []
+2026-03-27T00:16:16.036914666Z [err]    requireStack: []
+2026-03-27T00:16:16.036915372Z [err]  
+2026-03-27T00:16:16.036915539Z [err]    throw err;
+2026-03-27T00:16:16.036920198Z [err]  }
+2026-03-27T00:16:16.036925463Z [err]  }
+2026-03-27T00:16:16.036928289Z [err]    ^
+2026-03-27T00:16:16.036931753Z [err]  Error: Cannot find module '/app/server.js'
+2026-03-27T00:16:16.036934773Z [err]      at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+2026-03-27T00:16:16.036935874Z [err]  
+2026-03-27T00:16:16.036940291Z [err]  
+2026-03-27T00:16:16.036946554Z [err]      at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:164:12)
+2026-03-27T00:16:16.036947076Z [err]      at Module._load (node:internal/modules/cjs/loader:1038:27)
+2026-03-27T00:16:16.036950811Z [err]  Error: Cannot find module '/app/server.js'
+2026-03-27T00:16:16.036958341Z [err]      at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+2026-03-27T00:16:16.036963268Z [err]      at node:internal/main/run_main_module:28:49 {
+2026-03-27T00:16:16.036967290Z [err]      at Module._load (node:internal/modules/cjs/loader:1038:27)
+2026-03-27T00:16:16.036973356Z [err]      at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:164:12)
+2026-03-27T00:16:16.037620852Z [err]  Node.js v20.20.2
+2026-03-27T00:16:16.303290670Z [inf]  Mounting volume on: /var/lib/containers/railwayapp/bind-mounts/59869c42-8e25-4148-bcbc-fa122c7de331/vol_wffhcwy0116wto93
+2026-03-27T00:16:17.021396022Z [err]    code: 'MODULE_NOT_FOUND',
+2026-03-27T00:16:17.021403666Z [err]    requireStack: []
+2026-03-27T00:16:17.021410581Z [err]  }
+2026-03-27T00:16:17.021414620Z [err]  node:internal/modules/cjs/loader:1210
+2026-03-27T00:16:17.021418552Z [err]  
+2026-03-27T00:16:17.021426692Z [err]    throw err;
+2026-03-27T00:16:17.021435065Z [err]    ^
+2026-03-27T00:16:17.021446006Z [err]      at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+2026-03-27T00:16:17.021446019Z [err]  
+2026-03-27T00:16:17.021457329Z [err]  Error: Cannot find module '/app/server.js'
+2026-03-27T00:16:17.021460768Z [err]      at Module._load (node:internal/modules/cjs/loader:1038:27)
+2026-03-27T00:16:17.021467611Z [err]      at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:164:12)
+2026-03-27T00:16:17.021474268Z [err]      at node:internal/main/run_main_module:28:49 {
+2026-03-27T00:16:17.021489302Z [err]  Node.js v20.20.2
+2026-03-27T00:16:17.360114097Z [inf]  Mounting volume on: /var/lib/containers/railwayapp/bind-mounts/59869c42-8e25-4148-bcbc-fa122c7de331/vol_wffhcwy0116wto93
+2026-03-27T00:16:18.087702865Z [err]  node:internal/modules/cjs/loader:1210
+2026-03-27T00:16:18.087708505Z [err]    throw err;
+2026-03-27T00:16:18.087713335Z [err]    ^
+2026-03-27T00:16:18.087719758Z [err]  
+2026-03-27T00:16:18.087724668Z [err]  Error: Cannot find module '/app/server.js'
+2026-03-27T00:16:18.087730144Z [err]      at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+2026-03-27T00:16:18.087735176Z [err]      at Module._load (node:internal/modules/cjs/loader:1038:27)
+2026-03-27T00:16:18.087739906Z [err]      at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:164:12)
+2026-03-27T00:16:18.087744806Z [err]      at node:internal/main/run_main_module:28:49 {
+2026-03-27T00:16:18.087750182Z [err]    code: 'MODULE_NOT_FOUND',
+2026-03-27T00:16:18.087755274Z [err]    requireStack: []
+2026-03-27T00:16:18.087760081Z [err]  }
+2026-03-27T00:16:18.087765507Z [err]  
+2026-03-27T00:16:18.087770582Z [err]  Node.js v20.20.2
+2026-03-27T00:16:18.416904949Z [inf]  Mounting volume on: /var/lib/containers/railwayapp/bind-mounts/59869c42-8e25-4148-bcbc-fa122c7de331/vol_wffhcwy0116wto93
+2026-03-27T00:16:19.070813987Z [err]  node:internal/modules/cjs/loader:1210
+2026-03-27T00:16:19.070818457Z [err]    throw err;
+2026-03-27T00:16:19.070823540Z [err]    ^
+2026-03-27T00:16:19.070828360Z [err]  
+2026-03-27T00:16:19.070833158Z [err]  Error: Cannot find module '/app/server.js'
+2026-03-27T00:16:19.070837564Z [err]      at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+2026-03-27T00:16:19.070841448Z [err]      at Module._load (node:internal/modules/cjs/loader:1038:27)
+2026-03-27T00:16:19.070846251Z [err]      at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:164:12)
+2026-03-27T00:16:19.070852407Z [err]      at node:internal/main/run_main_module:28:49 {
+2026-03-27T00:16:19.070857760Z [err]    code: 'MODULE_NOT_FOUND',
+2026-03-27T00:16:19.070861899Z [err]    requireStack: []
+2026-03-27T00:16:19.070866244Z [err]  }
+2026-03-27T00:16:19.070870864Z [err]  
+2026-03-27T00:16:19.070875354Z [err]  Node.js v20.20.2
+2026-03-27T00:16:19.365264343Z [inf]  Mounting volume on: /var/lib/containers/railwayapp/bind-mounts/59869c42-8e25-4148-bcbc-fa122c7de331/vol_wffhcwy0116wto93
+2026-03-27T00:16:20.093645380Z [err]  node:internal/modules/cjs/loader:1210
+2026-03-27T00:16:20.093650210Z [err]    throw err;
+2026-03-27T00:16:20.093654306Z [err]    ^
+2026-03-27T00:16:20.093658289Z [err]  
+2026-03-27T00:16:20.093663132Z [err]  Error: Cannot find module '/app/server.js'
+2026-03-27T00:16:20.093667291Z [err]      at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+2026-03-27T00:16:20.093671325Z [err]      at Module._load (node:internal/modules/cjs/loader:1038:27)
+2026-03-27T00:16:20.093676833Z [err]      at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:164:12)
+2026-03-27T00:16:20.093680988Z [err]      at node:internal/main/run_main_module:28:49 {
+2026-03-27T00:16:20.093684911Z [err]    code: 'MODULE_NOT_FOUND',
+2026-03-27T00:16:20.093688771Z [err]    requireStack: []
+2026-03-27T00:16:20.093693020Z [err]  }
+2026-03-27T00:16:20.093697387Z [err]  
+2026-03-27T00:16:20.093701961Z [err]  Node.js v20.20.2
+2026-03-27T00:16:20.387918969Z [inf]  Mounting volume on: /var/lib/containers/railwayapp/bind-mounts/59869c42-8e25-4148-bcbc-fa122c7de331/vol_wffhcwy0116wto93
+2026-03-27T00:16:21.093003947Z [err]  Node.js v20.20.2
+2026-03-27T00:16:21.093033205Z [err]  node:internal/modules/cjs/loader:1210
+2026-03-27T00:16:21.093038639Z [err]    throw err;
+2026-03-27T00:16:21.093056005Z [err]    ^
+2026-03-27T00:16:21.093071065Z [err]    code: 'MODULE_NOT_FOUND',
+2026-03-27T00:16:21.093074346Z [err]      at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:164:12)
+2026-03-27T00:16:21.093082299Z [err]    requireStack: []
+2026-03-27T00:16:21.093083364Z [err]      at node:internal/main/run_main_module:28:49 {
+2026-03-27T00:16:21.093091020Z [err]  }
+2026-03-27T00:16:21.093098289Z [err]  
+2026-03-27T00:16:21.093101831Z [err]  
+2026-03-27T00:16:21.093105746Z [err]  Error: Cannot find module '/app/server.js'
+2026-03-27T00:16:21.093109909Z [err]      at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+2026-03-27T00:16:21.093114253Z [err]      at Module._load (node:internal/modules/cjs/loader:1038:27)
+2026-03-27T00:16:21.462497000Z [inf]  Mounting volume on: /var/lib/containers/railwayapp/bind-mounts/59869c42-8e25-4148-bcbc-fa122c7de331/vol_wffhcwy0116wto93
+2026-03-27T00:16:22.120198112Z [err]  node:internal/modules/cjs/loader:1210
+2026-03-27T00:16:22.120207152Z [err]    throw err;
+2026-03-27T00:16:22.120213231Z [err]    ^
+2026-03-27T00:16:22.120218665Z [err]  
+2026-03-27T00:16:22.120223383Z [err]  Error: Cannot find module '/app/server.js'
+2026-03-27T00:16:22.120228421Z [err]      at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+2026-03-27T00:16:22.120234467Z [err]      at Module._load (node:internal/modules/cjs/loader:1038:27)
+2026-03-27T00:16:22.120238679Z [err]      at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:164:12)
+2026-03-27T00:16:22.120243069Z [err]      at node:internal/main/run_main_module:28:49 {
+2026-03-27T00:16:22.120246478Z [err]    code: 'MODULE_NOT_FOUND',
+2026-03-27T00:16:22.120252924Z [err]    requireStack: []
+2026-03-27T00:16:22.120256759Z [err]  }
+2026-03-27T00:16:22.120260682Z [err]  
+2026-03-27T00:16:22.120264509Z [err]  Node.js v20.20.2
+2026-03-27T00:16:22.436436154Z [inf]  Mounting volume on: /var/lib/containers/railwayapp/bind-mounts/59869c42-8e25-4148-bcbc-fa122c7de331/vol_wffhcwy0116wto93
+2026-03-27T00:16:23.219006081Z [err]  }
+2026-03-27T00:16:23.219017942Z [err]  
+2026-03-27T00:16:23.219026297Z [err]  Node.js v20.20.2
+2026-03-27T00:16:23.219051061Z [err]  node:internal/modules/cjs/loader:1210
+2026-03-27T00:16:23.219056456Z [err]    throw err;
+2026-03-27T00:16:23.219061487Z [err]    ^
+2026-03-27T00:16:23.219067265Z [err]  
+2026-03-27T00:16:23.219073075Z [err]  Error: Cannot find module '/app/server.js'
+2026-03-27T00:16:23.219078546Z [err]      at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+2026-03-27T00:16:23.219084833Z [err]      at Module._load (node:internal/modules/cjs/loader:1038:27)
+2026-03-27T00:16:23.219090498Z [err]      at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:164:12)
+2026-03-27T00:16:23.219095693Z [err]      at node:internal/main/run_main_module:28:49 {
+2026-03-27T00:16:23.219100270Z [err]    code: 'MODULE_NOT_FOUND',
+2026-03-27T00:16:23.219106331Z [err]    requireStack: []
+2026-03-27T00:16:23.498395546Z [inf]  Mounting volume on: /var/lib/containers/railwayapp/bind-mounts/59869c42-8e25-4148-bcbc-fa122c7de331/vol_wffhcwy0116wto93
+2026-03-27T00:16:24.444979447Z [inf]  Mounting volume on: /var/lib/containers/railwayapp/bind-mounts/59869c42-8e25-4148-bcbc-fa122c7de331/vol_wffhcwy0116wto93
+2026-03-27T00:16:24.600932037Z [err]  node:internal/modules/cjs/loader:1210
+2026-03-27T00:16:24.600942508Z [err]    throw err;
+2026-03-27T00:16:24.600949264Z [err]    ^
+2026-03-27T00:16:24.600956080Z [err]  
+2026-03-27T00:16:24.600961983Z [err]  Error: Cannot find module '/app/server.js'
+2026-03-27T00:16:24.600968129Z [err]      at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+2026-03-27T00:16:24.600973760Z [err]      at Module._load (node:internal/modules/cjs/loader:1038:27)
+2026-03-27T00:16:24.600982095Z [err]      at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:164:12)
+2026-03-27T00:16:24.600987720Z [err]      at node:internal/main/run_main_module:28:49 {
+2026-03-27T00:16:24.600993385Z [err]    code: 'MODULE_NOT_FOUND',
+2026-03-27T00:16:24.600998878Z [err]    requireStack: []
+2026-03-27T00:16:24.601005215Z [err]  }
+2026-03-27T00:16:24.601013015Z [err]  
+2026-03-27T00:16:24.601021343Z [err]  Node.js v20.20.2
+2026-03-27T00:16:25.452723879Z [inf]  Mounting volume on: /var/lib/containers/railwayapp/bind-mounts/59869c42-8e25-4148-bcbc-fa122c7de331/vol_wffhcwy0116wto93
+2026-03-27T00:16:26.051592665Z [err]  
+2026-03-27T00:16:26.051605264Z [err]  Node.js v20.20.2
+2026-03-27T00:16:26.051611106Z [err]  node:internal/modules/cjs/loader:1210
+2026-03-27T00:16:26.051625394Z [err]    throw err;
+2026-03-27T00:16:26.051631856Z [err]      at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:164:12)
+2026-03-27T00:16:26.051640777Z [err]      at node:internal/main/run_main_module:28:49 {
+2026-03-27T00:16:26.051646706Z [err]    code: 'MODULE_NOT_FOUND',
+2026-03-27T00:16:26.051652667Z [err]    requireStack: []
+2026-03-27T00:16:26.051658228Z [err]  }
+2026-03-27T00:16:26.051669734Z [err]    ^
+2026-03-27T00:16:26.051678483Z [err]  
+2026-03-27T00:16:26.051685962Z [err]  Error: Cannot find module '/app/server.js'
+2026-03-27T00:16:26.051693249Z [err]      at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+2026-03-27T00:16:26.051700087Z [err]      at Module._load (node:internal/modules/cjs/loader:1038:27)
