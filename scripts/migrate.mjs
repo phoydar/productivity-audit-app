@@ -16,6 +16,7 @@ const tables = [
     total_deep_work REAL NOT NULL DEFAULT 0,
     total_shallow_work REAL NOT NULL DEFAULT 0,
     total_interruptions REAL NOT NULL DEFAULT 0,
+    total_meetings REAL NOT NULL DEFAULT 0,
     total_personal_misc REAL NOT NULL DEFAULT 0,
     is_reconstructed INTEGER NOT NULL DEFAULT 0,
     generated_at TEXT,
@@ -28,7 +29,7 @@ const tables = [
     task TEXT NOT NULL,
     outcome TEXT NOT NULL,
     duration_minutes INTEGER NOT NULL,
-    category TEXT NOT NULL CHECK(category IN ('DEEP_WORK','SHALLOW_WORK','INTERRUPTION','PERSONAL_MISC')),
+    category TEXT NOT NULL CHECK(category IN ('DEEP_WORK','SHALLOW_WORK','MEETING','INTERRUPTION','PERSONAL_MISC')),
     sort_order INTEGER NOT NULL DEFAULT 0,
     is_reconstructed INTEGER NOT NULL DEFAULT 0,
     created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -57,7 +58,7 @@ const tables = [
   `CREATE TABLE IF NOT EXISTS todo (
     id TEXT PRIMARY KEY,
     task TEXT NOT NULL,
-    category TEXT NOT NULL CHECK(category IN ('DEEP_WORK','SHALLOW_WORK','INTERRUPTION','PERSONAL_MISC')),
+    category TEXT NOT NULL CHECK(category IN ('DEEP_WORK','SHALLOW_WORK','MEETING','INTERRUPTION','PERSONAL_MISC')),
     estimated_minutes INTEGER NOT NULL,
     priority INTEGER NOT NULL DEFAULT 0,
     tags TEXT,
@@ -84,10 +85,21 @@ const indexes = [
   `CREATE INDEX IF NOT EXISTS idx_todo_created ON todo(created_at)`,
 ];
 
+// Idempotent column additions for existing databases
+const alterations = [
+  `ALTER TABLE daily_log ADD COLUMN total_meetings REAL NOT NULL DEFAULT 0`,
+];
+
 async function migrate() {
   console.log('[migrate] Running startup migration...');
   for (const sql of [...tables, ...indexes]) {
     await db.execute(sql);
+  }
+  // Run ALTER statements, ignoring "duplicate column" errors
+  for (const sql of alterations) {
+    try { await db.execute(sql); } catch (e) {
+      if (!String(e).includes('duplicate column')) throw e;
+    }
   }
   console.log('[migrate] All tables and indexes ready.');
 }

@@ -19,6 +19,12 @@ COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/scripts/migrate.mjs ./scripts/migrate.mjs
 
+# Copy @libsql/client and its transitive deps for migrate.mjs
+# (not included in Next.js standalone bundle)
+COPY --from=deps /app/node_modules/@libsql ./node_modules/@libsql
+COPY --from=deps /app/node_modules/libsql ./node_modules/libsql
+COPY --from=deps /app/node_modules/js-base64 ./node_modules/js-base64
+
 # Create data directory for SQLite
 RUN mkdir -p /app/data
 
