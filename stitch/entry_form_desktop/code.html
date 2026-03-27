@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-primary": "#ffffff",
+                        "inverse-primary": "#b4c5ff",
+                        "secondary-container": "#fea619",
+                        "primary": "#004ac6",
+                        "surface-container": "#e5eeff",
+                        "inverse-surface": "#213145",
+                        "surface": "#f8f9ff",
+                        "outline": "#737686",
+                        "on-secondary-fixed": "#2a1700",
+                        "surface-tint": "#0053db",
+                        "tertiary-container": "#7d4ce7",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed-variant": "#653e00",
+                        "on-primary-fixed": "#00174b",
+                        "secondary-fixed-dim": "#ffb95f",
+                        "surface-variant": "#d3e4fe",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed": "#e9ddff",
+                        "surface-dim": "#cbdbf5",
+                        "on-surface-variant": "#434655",
+                        "inverse-on-surface": "#eaf1ff",
+                        "error": "#ba1a1a",
+                        "tertiary": "#632ecd",
+                        "outline-variant": "#c3c6d7",
+                        "on-secondary-container": "#684000",
+                        "on-primary-container": "#eeefff",
+                        "primary-container": "#2563eb",
+                        "on-tertiary-fixed": "#23005c",
+                        "primary-fixed": "#dbe1ff",
+                        "on-surface": "#0b1c30",
+                        "secondary": "#855300",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-container": "#f6edff",
+                        "surface-container-high": "#dce9ff",
+                        "tertiary-fixed-dim": "#d0bcff",
+                        "surface-container-highest": "#d3e4fe",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "on-background": "#0b1c30",
+                        "background": "#f8f9ff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#eff4ff",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed": "#ffddb8",
+                        "on-tertiary-fixed-variant": "#5516be",
+                        "surface-bright": "#f8f9ff",
+                        "on-error": "#ffffff"
+                    },
+                    fontFamily: {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface overflow-hidden">
+<!-- Background Dashboard Context -->
+<div class="flex h-screen w-full opacity-40 grayscale-[0.2]">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-64 border-r-0 bg-[#213145] flex flex-col py-6 z-10">
+<div class="px-6 mb-8">
+<h1 class="text-lg font-bold text-white tracking-tighter">Tech Lead Console</h1>
+<p class="text-[10px] text-outline-variant uppercase tracking-widest mt-1">v2.4.0</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="bg-[#2563eb] text-white rounded-md mx-2 flex items-center px-4 py-3 font-medium text-sm transition-transform active:scale-95" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="dashboard">dashboard</span>
+                    Dashboard
+                </a>
+<a class="text-[#434655] hover:text-white mx-2 flex items-center px-4 py-3 font-medium text-sm hover:bg-[#2563eb]/10 transition-colors duration-150" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="calendar_today">calendar_today</span>
+                    Today
+                </a>
+<a class="text-[#434655] hover:text-white mx-2 flex items-center px-4 py-3 font-medium text-sm hover:bg-[#2563eb]/10 transition-colors duration-150" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="fact_check">fact_check</span>
+                    Check-In
+                </a>
+<a class="text-[#434655] hover:text-white mx-2 flex items-center px-4 py-3 font-medium text-sm hover:bg-[#2563eb]/10 transition-colors duration-150" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="settings">settings</span>
+                    Settings
+                </a>
+</nav>
+<div class="mt-auto px-4">
+<div class="flex items-center px-4 py-3 text-[#434655] text-sm">
+<span class="material-symbols-outlined mr-3 text-secondary-container" data-icon="local_fire_department">local_fire_department</span>
+                    Streak: 12 Days
+                </div>
+</div>
+</aside>
+<!-- TopAppBar & Content Mockup -->
+<main class="flex-1 ml-64 bg-surface">
+<header class="sticky top-0 w-full z-40 bg-[#f8f9ff] flex justify-between items-center h-16 px-8 border-b border-[#c3c6d7]/15">
+<div class="flex items-center space-x-2">
+<span class="text-blue-600 font-black">Architecture Workspace</span>
+<span class="text-outline-variant">/</span>
+<span class="text-on-surface font-semibold text-sm">Session Logging</span>
+</div>
+<div class="flex items-center space-x-6">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer" data-icon="help_outline">help_outline</span>
+<div class="w-8 h-8 rounded-full bg-surface-container-high overflow-hidden">
+<img alt="Lead Developer Avatar" data-alt="Close up professional headshot of a developer in a modern office with soft bokeh background lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYONM0kBM6s3kUnvIUYpO6c6ClSqIH8gxMaks_Vf2tRN33ukym3koFNBfgQGypzIvzdLk48PcH3NPHMG0pMZctDL1Gdo35l5Z0sI5_VTGIcVHKKrhBDW_Tbpgklyp9YgVC64yYaOWGiKIMvPNAEWyepCCWRoRsSLwrqmv3CkU3KtelWOv7zJBeyOpr-uICqjQ2r3NcIvlNf8Ih_d2ZowS_oUh8qi25fgPYbs-FE4ofkvoym-q5dUOniCBfvQIvIhSAdozTk3ooIyxF"/>
+</div>
+</div>
+</header>
+<div class="p-8 max-w-5xl mx-auto space-y-12">
+<section>
+<h2 class="text-[2.75rem] font-bold tracking-tight text-on-surface mb-2">42h Focused</h2>
+<p class="text-on-surface-variant text-sm">Your engineering throughput is up 12% from last sprint.</p>
+</section>
+<div class="grid grid-cols-3 gap-6">
+<div class="h-48 bg-surface-container-lowest rounded-lg"></div>
+<div class="h-48 bg-surface-container-lowest rounded-lg"></div>
+<div class="h-48 bg-surface-container-lowest rounded-lg"></div>
+</div>
+</div>
+</main>
+</div>
+<!-- Overlay / Backdrop -->
+<div class="fixed inset-0 bg-inverse-surface/20 backdrop-blur-sm z-50"></div>
+<!-- Right Side Sliding Sheet -->
+<div class="fixed right-0 top-0 h-full w-[480px] bg-surface shadow-[0_0_32px_0_rgba(0,74,198,0.06)] z-[60] flex flex-col border-l border-outline-variant/15">
+<!-- Header -->
+<div class="px-8 py-6 flex items-center justify-between border-b border-outline-variant/10">
+<div>
+<h3 class="text-xl font-bold tracking-tight text-on-surface">Log Activity</h3>
+<p class="text-xs text-on-surface-variant font-medium mt-0.5">Capturing architectural velocity</p>
+</div>
+<button class="p-2 hover:bg-surface-container-low rounded-full text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+</div>
+<!-- Form Content -->
+<div class="flex-1 overflow-y-auto no-scrollbar p-8 space-y-8">
+<!-- Task Field -->
+<div class="space-y-3">
+<label class="block text-[0.6875rem] font-bold uppercase tracking-wider text-outline">Active Task</label>
+<textarea class="w-full bg-surface-container-lowest border border-outline-variant/20 rounded-md p-4 text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all placeholder:text-outline-variant/50" placeholder="e.g. Refactoring GraphQL schema for better type safety..." rows="2"></textarea>
+</div>
+<!-- Outcome Field -->
+<div class="space-y-3">
+<label class="block text-[0.6875rem] font-bold uppercase tracking-wider text-outline">Primary Outcome</label>
+<input class="w-full bg-surface-container-lowest border border-outline-variant/20 rounded-md px-4 py-3 text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all placeholder:text-outline-variant/50" placeholder="Reduced query latency by 150ms" type="text"/>
+</div>
+<!-- Duration Segmented Button -->
+<div class="space-y-3">
+<label class="block text-[0.6875rem] font-bold uppercase tracking-wider text-outline">Time Invested</label>
+<div class="flex bg-surface-container-low p-1 rounded-md">
+<button class="flex-1 py-2 text-xs font-semibold rounded bg-surface-container-lowest shadow-sm text-primary">15m</button>
+<button class="flex-1 py-2 text-xs font-semibold text-on-surface-variant hover:text-on-surface transition-colors">45m</button>
+<button class="flex-1 py-2 text-xs font-semibold text-on-surface-variant hover:text-on-surface transition-colors">1.5h</button>
+<button class="flex-1 py-2 text-xs font-semibold text-on-surface-variant hover:text-on-surface transition-colors">4h+</button>
+</div>
+</div>
+<!-- Category Grid -->
+<div class="space-y-3">
+<label class="block text-[0.6875rem] font-bold uppercase tracking-wider text-outline">Work Classification</label>
+<div class="grid grid-cols-2 gap-3">
+<!-- Deep Work -->
+<label class="relative group cursor-pointer">
+<input checked="" class="sr-only peer" name="category" type="radio"/>
+<div class="h-full p-4 rounded-lg bg-surface-container-lowest border border-outline-variant/15 peer-checked:border-primary-container peer-checked:bg-primary-container/5 transition-all">
+<div class="flex items-center justify-between mb-2">
+<span class="material-symbols-outlined text-primary-container" data-icon="psychology">psychology</span>
+<div class="w-2 h-2 rounded-full bg-primary-container"></div>
+</div>
+<span class="block text-xs font-bold text-on-surface">Deep Work</span>
+<span class="block text-[10px] text-on-surface-variant mt-1 leading-tight">Complex problem solving and coding sessions.</span>
+</div>
+</label>
+<!-- Shallow Work -->
+<label class="relative group cursor-pointer">
+<input class="sr-only peer" name="category" type="radio"/>
+<div class="h-full p-4 rounded-lg bg-surface-container-lowest border border-outline-variant/15 peer-checked:border-secondary-container peer-checked:bg-secondary-container/5 transition-all">
+<div class="flex items-center justify-between mb-2">
+<span class="material-symbols-outlined text-secondary-container" data-icon="checklist">checklist</span>
+<div class="w-2 h-2 rounded-full bg-secondary-container"></div>
+</div>
+<span class="block text-xs font-bold text-on-surface">Shallow</span>
+<span class="block text-[10px] text-on-surface-variant mt-1 leading-tight">Admin, emails, and repetitive maintenance tasks.</span>
+</div>
+</label>
+<!-- Interruption -->
+<label class="relative group cursor-pointer">
+<input class="sr-only peer" name="category" type="radio"/>
+<div class="h-full p-4 rounded-lg bg-surface-container-lowest border border-outline-variant/15 peer-checked:border-error peer-checked:bg-error/5 transition-all">
+<div class="flex items-center justify-between mb-2">
+<span class="material-symbols-outlined text-error" data-icon="bolt">bolt</span>
+<div class="w-2 h-2 rounded-full bg-error"></div>
+</div>
+<span class="block text-xs font-bold text-on-surface">Interruption</span>
+<span class="block text-[10px] text-on-surface-variant mt-1 leading-tight">Ad-hoc meetings or urgent firefighting issues.</span>
+</div>
+</label>
+<!-- Personal -->
+<label class="relative group cursor-pointer">
+<input class="sr-only peer" name="category" type="radio"/>
+<div class="h-full p-4 rounded-lg bg-surface-container-lowest border border-outline-variant/15 peer-checked:border-tertiary-container peer-checked:bg-tertiary-container/5 transition-all">
+<div class="flex items-center justify-between mb-2">
+<span class="material-symbols-outlined text-tertiary-container" data-icon="self_improvement">self_improvement</span>
+<div class="w-2 h-2 rounded-full bg-tertiary-container"></div>
+</div>
+<span class="block text-xs font-bold text-on-surface">Personal</span>
+<span class="block text-[10px] text-on-surface-variant mt-1 leading-tight">Breaks, learning, or non-work coordination.</span>
+</div>
+</label>
+</div>
+</div>
+<!-- Contextual Data Visualization Hint -->
+<div class="p-4 bg-surface-container-low rounded-lg flex items-start space-x-4">
+<span class="material-symbols-outlined text-primary mt-0.5" data-icon="info">info</span>
+<p class="text-[11px] leading-relaxed text-on-surface-variant">
+                    Logging this session will bring your weekly <strong class="text-on-surface">Deep Work</strong> average to <span class="text-primary font-bold">5.4h/day</span>, surpassing your set target for Sprint 12.
+                </p>
+</div>
+</div>
+<!-- Footer Actions -->
+<div class="p-8 bg-surface border-t border-outline-variant/10 flex items-center space-x-4">
+<button class="flex-1 bg-primary text-on-primary py-3 rounded-md font-semibold text-sm hover:opacity-90 active:scale-[0.98] transition-all">
+                Save Activity
+            </button>
+<button class="px-6 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-md font-semibold text-sm transition-colors">
+                Cancel
+            </button>
+</div>
+</div>
+</body></html>

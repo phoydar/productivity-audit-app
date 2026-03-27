@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Check-In | Architecture Workspace</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-primary": "#ffffff",
+                        "inverse-primary": "#b4c5ff",
+                        "secondary-container": "#fea619",
+                        "primary": "#004ac6",
+                        "surface-container": "#e5eeff",
+                        "inverse-surface": "#213145",
+                        "surface": "#f8f9ff",
+                        "outline": "#737686",
+                        "on-secondary-fixed": "#2a1700",
+                        "surface-tint": "#0053db",
+                        "tertiary-container": "#7d4ce7",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed-variant": "#653e00",
+                        "on-primary-fixed": "#00174b",
+                        "secondary-fixed-dim": "#ffb95f",
+                        "surface-variant": "#d3e4fe",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed": "#e9ddff",
+                        "surface-dim": "#cbdbf5",
+                        "on-surface-variant": "#434655",
+                        "inverse-on-surface": "#eaf1ff",
+                        "error": "#ba1a1a",
+                        "tertiary": "#632ecd",
+                        "outline-variant": "#c3c6d7",
+                        "on-secondary-container": "#684000",
+                        "on-primary-container": "#eeefff",
+                        "primary-container": "#2563eb",
+                        "on-tertiary-fixed": "#23005c",
+                        "primary-fixed": "#dbe1ff",
+                        "on-surface": "#0b1c30",
+                        "secondary": "#855300",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-container": "#f6edff",
+                        "surface-container-high": "#dce9ff",
+                        "tertiary-fixed-dim": "#d0bcff",
+                        "surface-container-highest": "#d3e4fe",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "on-background": "#0b1c30",
+                        "background": "#f8f9ff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#eff4ff",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed": "#ffddb8",
+                        "on-tertiary-fixed-variant": "#5516be",
+                        "surface-bright": "#f8f9ff",
+                        "on-error": "#ffffff"
+                    },
+                    fontFamily: {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col">
+<!-- Header Navigation Shell (Contextual suppression applied - only minimal branding) -->
+<header class="sticky top-0 w-full z-40 bg-surface/80 backdrop-blur-md flex justify-between items-center h-16 px-8 transition-opacity duration-300">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="architecture">architecture</span>
+<span class="text-blue-600 font-black tracking-tighter">Architecture Workspace</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-surface-container-high transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex items-center justify-center p-6 sm:p-12 bg-gradient-to-b from-surface to-surface-container-low/50">
+<div class="w-full max-w-[800px] flex flex-col items-center">
+<!-- Progress Indicator -->
+<nav aria-label="Progress" class="mb-16 flex items-center gap-3">
+<div class="flex gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-primary ring-4 ring-primary/10"></span>
+<span class="w-2.5 h-2.5 rounded-full bg-outline-variant/30"></span>
+<span class="w-2.5 h-2.5 rounded-full bg-outline-variant/30"></span>
+<span class="w-2.5 h-2.5 rounded-full bg-outline-variant/30"></span>
+<span class="w-2.5 h-2.5 rounded-full bg-outline-variant/30"></span>
+</div>
+<span class="text-[0.6875rem] font-medium text-on-surface-variant uppercase tracking-widest ml-2">Step 1 of 5</span>
+</nav>
+<!-- Question & Input Section -->
+<section class="w-full space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
+<header class="text-center space-y-4">
+<h1 class="text-[1.5rem] font-semibold text-on-surface tracking-tight leading-tight">
+                        What did you work on today?
+                    </h1>
+<p class="text-[0.875rem] text-on-surface-variant max-w-md mx-auto">
+                        Document your key contributions, pull requests, and architectural decisions made in this session.
+                    </p>
+</header>
+<div class="relative group">
+<!-- Textarea with Material Design influence -->
+<textarea class="w-full bg-surface-container-lowest border border-outline-variant/20 rounded-xl p-8 text-[1rem] leading-relaxed text-on-surface placeholder:text-outline/40 focus:ring-1 focus:ring-primary focus:border-primary transition-all duration-300 resize-none shadow-sm group-hover:shadow-md" placeholder="Start typing your entry..." rows="8"></textarea>
+<!-- Decorative corner hint -->
+<div class="absolute bottom-4 right-4 flex items-center gap-2 text-on-surface-variant/40 pointer-events-none">
+<span class="text-[0.6875rem] font-medium uppercase tracking-tighter">Journaling Mode</span>
+<span class="material-symbols-outlined text-[1rem]" data-icon="edit_note">edit_note</span>
+</div>
+</div>
+<!-- Guidance/Bento Cards for Quick Selection (Contextual Aid) -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<button class="flex items-center gap-3 p-4 bg-surface-container-lowest border border-outline-variant/10 rounded-lg text-left hover:bg-surface-container-high hover:border-primary/20 transition-all group">
+<div class="w-10 h-10 rounded-md bg-primary-container/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" data-icon="code">code</span>
+</div>
+<div>
+<p class="text-[0.875rem] font-semibold text-on-surface">Refactoring</p>
+<p class="text-[0.6875rem] text-on-surface-variant">Cleanup &amp; Optimization</p>
+</div>
+</button>
+<button class="flex items-center gap-3 p-4 bg-surface-container-lowest border border-outline-variant/10 rounded-lg text-left hover:bg-surface-container-high hover:border-primary/20 transition-all group">
+<div class="w-10 h-10 rounded-md bg-tertiary-container/10 flex items-center justify-center text-tertiary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" data-icon="schema">schema</span>
+</div>
+<div>
+<p class="text-[0.875rem] font-semibold text-on-surface">Architecture</p>
+<p class="text-[0.6875rem] text-on-surface-variant">Design &amp; Patterns</p>
+</div>
+</button>
+<button class="flex items-center gap-3 p-4 bg-surface-container-lowest border border-outline-variant/10 rounded-lg text-left hover:bg-surface-container-high hover:border-primary/20 transition-all group">
+<div class="w-10 h-10 rounded-md bg-secondary-container/10 flex items-center justify-center text-secondary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" data-icon="bug_report">bug_report</span>
+</div>
+<div>
+<p class="text-[0.875rem] font-semibold text-on-surface">Bug Fixes</p>
+<p class="text-[0.6875rem] text-on-surface-variant">Stability &amp; Patching</p>
+</div>
+</button>
+</div>
+</section>
+<!-- Action Footer -->
+<footer class="mt-16 w-full flex items-center justify-between">
+<button class="flex items-center gap-2 px-6 py-2.5 rounded-md text-[0.875rem] font-medium text-on-surface-variant hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-[1.25rem]" data-icon="arrow_back">arrow_back</span>
+                    Back
+                </button>
+<div class="flex items-center gap-6">
+<span class="hidden sm:block text-[0.6875rem] text-on-surface-variant/60 font-medium">Auto-saved 2m ago</span>
+<button class="flex items-center gap-2 px-8 py-2.5 bg-primary text-on-primary rounded-md text-[0.875rem] font-semibold shadow-lg shadow-primary/20 hover:bg-primary/90 active:scale-[0.98] transition-all">
+                        Next
+                        <span class="material-symbols-outlined text-[1.25rem]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</footer>
+</div>
+</main>
+<!-- Background Decorative Elements -->
+<div class="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+<div class="absolute -top-24 -right-24 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
+<div class="absolute top-1/2 -left-48 w-[32rem] h-[32rem] bg-tertiary/5 rounded-full blur-[128px]"></div>
+</div>
+</body></html>

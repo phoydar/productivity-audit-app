@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    ports:
+      - '3000:3000'
+    environment:
+      - DATABASE_URL=file:/app/data/productivity-audit.db
+      - API_SECRET=${API_SECRET:-dev-secret-change-in-production}
+      - NEXT_PUBLIC_APP_URL=http://localhost:3000
+    volumes:
+      - app-data:/app/data
+
+volumes:
+  app-data:

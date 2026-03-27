@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Architectural Workspace - Entry Form</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-bright": "#f8f9ff",
+                        "outline": "#737686",
+                        "surface-container-highest": "#d3e4fe",
+                        "tertiary-fixed": "#e9ddff",
+                        "secondary-container": "#fea619",
+                        "tertiary-container": "#7d4ce7",
+                        "tertiary-fixed-dim": "#d0bcff",
+                        "on-error-container": "#93000a",
+                        "surface": "#f8f9ff",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "surface-container-low": "#eff4ff",
+                        "surface-tint": "#0053db",
+                        "on-primary-container": "#eeefff",
+                        "primary-container": "#2563eb",
+                        "tertiary": "#632ecd",
+                        "on-secondary": "#ffffff",
+                        "surface-dim": "#cbdbf5",
+                        "surface-container-high": "#dce9ff",
+                        "primary": "#004ac6",
+                        "outline-variant": "#c3c6d7",
+                        "secondary": "#855300",
+                        "secondary-fixed": "#ffddb8",
+                        "error-container": "#ffdad6",
+                        "on-surface-variant": "#434655",
+                        "on-primary": "#ffffff",
+                        "background": "#f8f9ff",
+                        "primary-fixed": "#dbe1ff",
+                        "inverse-primary": "#b4c5ff",
+                        "on-tertiary-fixed-variant": "#5516be",
+                        "on-secondary-container": "#684000",
+                        "on-tertiary-container": "#f6edff",
+                        "on-surface": "#0b1c30",
+                        "error": "#ba1a1a",
+                        "on-error": "#ffffff",
+                        "on-background": "#0b1c30",
+                        "surface-variant": "#d3e4fe",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-secondary-fixed": "#2a1700",
+                        "surface-container": "#e5eeff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed": "#00174b",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed-variant": "#653e00",
+                        "inverse-surface": "#213145",
+                        "secondary-fixed-dim": "#ffb95f",
+                        "on-tertiary-fixed": "#23005c"
+                    },
+                    fontFamily: {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface antialiased overflow-hidden">
+<!-- Desktop Navigation Drawer (Shared Component) -->
+<aside class="fixed left-0 top-0 h-full w-64 z-50 bg-[#213145] dark:bg-slate-950 hidden lg:flex flex-col p-4 justify-between h-screen shadow-2xl shadow-blue-900/10">
+<div>
+<div class="text-white font-black tracking-tight text-xl mb-8">Disciplined Canvas</div>
+<nav class="space-y-1">
+<a class="bg-[#2563eb] text-white rounded-md mx-2 px-4 py-3 flex items-center gap-3 transition-all duration-200 Active: scale-[0.98]" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-['Inter'] text-[11px] uppercase tracking-widest font-medium">Dashboard</span>
+</a>
+<a class="text-[#434655] hover:text-white px-4 py-3 flex items-center gap-3 transition-all duration-200 hover:bg-white/5" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span class="font-['Inter'] text-[11px] uppercase tracking-widest font-medium">Today</span>
+</a>
+<a class="text-[#434655] hover:text-white px-4 py-3 flex items-center gap-3 transition-all duration-200 hover:bg-white/5" href="#">
+<span class="material-symbols-outlined" data-icon="fact_check">fact_check</span>
+<span class="font-['Inter'] text-[11px] uppercase tracking-widest font-medium">Check-In</span>
+</a>
+<a class="text-[#434655] hover:text-white px-4 py-3 flex items-center gap-3 transition-all duration-200 hover:bg-white/5" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-['Inter'] text-[11px] uppercase tracking-widest font-medium">Settings</span>
+</a>
+</nav>
+</div>
+</aside>
+<!-- Top App Bar (Shared Component - Mobile Only View) -->
+<header class="fixed top-0 w-full z-40 bg-[#f8f9ff] dark:bg-slate-950 border-b border-[#c3c6d7]/15 dark:border-slate-800/50 lg:hidden">
+<div class="flex items-center justify-between px-6 h-16 w-full">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#004ac6] dark:text-blue-400" data-icon="grid_view">grid_view</span>
+<h1 class="text-lg font-bold tracking-tighter text-[#213145] dark:text-slate-100 uppercase">Architectural Workspace</h1>
+</div>
+<div class="w-8 h-8 rounded-full bg-surface-container-high overflow-hidden border border-outline-variant/20">
+<img class="w-full h-full object-cover" data-alt="professional portrait of a technical lead with glasses and focused expression against a neutral studio background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjRZcKTauvNQ7IrWnh7lZm719L3xBF2WST5XtDqEvA8GVPsjTQt2UjguilwnYXPvq3Yj_-GFqH8RhhyIv47uxoNbTBPF-XIbJtPtwClaHiXbF8LV3O9aFP9epszfH-aEyqq0-3y5sPwI4gXFjXb87kPdHS7rjwQyy3k8TJA4yZh9PiAzzMhrPdF12W05H5RbYkPHorTTbBkdzqjVoRmjP-EgtPvfHNdvX8pqSDc9jK7Gh9RnRwRSsrTfuld-rp03hvPxDjAClgm4Mp"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas (Backgrounded during Sheet Open) -->
+<main class="lg:pl-64 pt-16 lg:pt-0 min-h-screen bg-surface">
+<div class="p-8 max-w-6xl mx-auto space-y-12">
+<!-- Background Content Mock -->
+<section>
+<h2 class="text-3xl font-bold tracking-tight text-on-surface mb-2">Workspace Overview</h2>
+<p class="text-on-surface-variant body-md max-w-2xl mb-12">Your performance architecture for the current sprint.</p>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="p-6 rounded-lg bg-surface-container-lowest border border-outline-variant/10">
+<div class="text-[11px] uppercase tracking-widest text-on-surface-variant font-semibold mb-4">Focus Score</div>
+<div class="text-5xl font-extrabold text-primary">84%</div>
+<div class="mt-4 text-xs text-on-surface-variant">Top 5% of architectural contributors</div>
+</div>
+<div class="p-6 rounded-lg bg-surface-container-lowest border border-outline-variant/10">
+<div class="text-[11px] uppercase tracking-widest text-on-surface-variant font-semibold mb-4">Deep Work</div>
+<div class="text-5xl font-extrabold text-on-surface">32.4h</div>
+<div class="mt-4 text-xs text-on-surface-variant">+4.2h compared to last week</div>
+</div>
+<div class="p-6 rounded-lg bg-surface-container-lowest border border-outline-variant/10">
+<div class="text-[11px] uppercase tracking-widest text-on-surface-variant font-semibold mb-4">Interruptions</div>
+<div class="text-5xl font-extrabold text-error">12</div>
+<div class="mt-4 text-xs text-on-surface-variant">Trending down by 15%</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Sheet Overlay -->
+<div class="fixed inset-0 bg-inverse-surface/40 backdrop-blur-[2px] z-[60] flex justify-end">
+<!-- Entry Form Sheet (Sliding in from right) -->
+<div class="w-full max-w-md bg-surface-container-lowest h-full shadow-2xl flex flex-col relative animate-in slide-in-from-right duration-300">
+<!-- Sheet Header -->
+<div class="px-6 pt-8 pb-4 flex justify-between items-start">
+<div>
+<h2 class="text-xl font-bold tracking-tight text-on-surface">New Productivity Entry</h2>
+<p class="text-xs text-on-surface-variant mt-1">Construct your daily contribution record.</p>
+</div>
+<button class="p-2 hover:bg-surface-container rounded-full transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="close">close</span>
+</button>
+</div>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto px-6 py-4 space-y-8">
+<!-- Task Field -->
+<div class="space-y-2">
+<label class="text-[11px] uppercase tracking-widest font-bold text-on-surface-variant">Task Description</label>
+<textarea class="w-full bg-surface-container-low border-transparent focus:border-primary focus:ring-1 focus:ring-primary rounded-md p-3 body-md text-on-surface placeholder:text-outline-variant/60" placeholder="What did you work on? Be specific." rows="2"></textarea>
+<p class="text-[10px] text-error flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="error">error</span>
+                        Entry is too vague. Please add more technical detail.
+                    </p>
+</div>
+<!-- Outcome Field -->
+<div class="space-y-2">
+<label class="text-[11px] uppercase tracking-widest font-bold text-on-surface-variant">Outcome</label>
+<textarea class="w-full bg-surface-container-low border-transparent focus:border-primary focus:ring-1 focus:ring-primary rounded-md p-3 body-md text-on-surface placeholder:text-outline-variant/60" placeholder="What was the result?" rows="1"></textarea>
+</div>
+<!-- Duration Field (Segmented Buttons) -->
+<div class="space-y-3">
+<label class="text-[11px] uppercase tracking-widest font-bold text-on-surface-variant">Duration</label>
+<div class="grid grid-cols-4 gap-2">
+<button class="py-2 text-[10px] font-bold border border-outline-variant/30 rounded hover:bg-surface-container-high transition-colors text-on-surface">15m</button>
+<button class="py-2 text-[10px] font-bold border border-primary bg-primary-container text-white rounded transition-colors shadow-sm">30m</button>
+<button class="py-2 text-[10px] font-bold border border-outline-variant/30 rounded hover:bg-surface-container-high transition-colors text-on-surface">45m</button>
+<button class="py-2 text-[10px] font-bold border border-outline-variant/30 rounded hover:bg-surface-container-high transition-colors text-on-surface">1h</button>
+<button class="py-2 text-[10px] font-bold border border-outline-variant/30 rounded hover:bg-surface-container-high transition-colors text-on-surface">1.5h</button>
+<button class="py-2 text-[10px] font-bold border border-outline-variant/30 rounded hover:bg-surface-container-high transition-colors text-on-surface">2h</button>
+<button class="py-2 text-[10px] font-bold border border-outline-variant/30 rounded hover:bg-surface-container-high transition-colors text-on-surface">3h</button>
+<button class="py-2 text-[10px] font-bold border border-outline-variant/30 rounded hover:bg-surface-container-high transition-colors text-on-surface">4h+</button>
+</div>
+</div>
+<!-- Category Field (Radio Cards) -->
+<div class="space-y-3">
+<label class="text-[11px] uppercase tracking-widest font-bold text-on-surface-variant">Work Category</label>
+<div class="grid grid-cols-2 gap-3">
+<!-- Deep Work -->
+<div class="relative group cursor-pointer border-2 border-primary rounded-lg p-3 bg-primary-container/5">
+<div class="flex justify-between items-start mb-1">
+<span class="text-[10px] font-bold text-primary-container uppercase">Deep Work</span>
+<div class="w-3 h-3 rounded-full bg-primary-container"></div>
+</div>
+<p class="text-[9px] leading-tight text-on-surface-variant">Coding, architecture, problem solving</p>
+<input checked="" class="absolute inset-0 opacity-0 cursor-pointer" name="category" type="radio"/>
+</div>
+<!-- Shallow Work -->
+<div class="relative group cursor-pointer border border-outline-variant/20 rounded-lg p-3 hover:bg-surface-container transition-colors">
+<div class="flex justify-between items-start mb-1">
+<span class="text-[10px] font-bold text-secondary-container uppercase">Shallow</span>
+<div class="w-3 h-3 rounded-full bg-secondary-container"></div>
+</div>
+<p class="text-[9px] leading-tight text-on-surface-variant">Meetings, email, admin</p>
+<input class="absolute inset-0 opacity-0 cursor-pointer" name="category" type="radio"/>
+</div>
+<!-- Interruption -->
+<div class="relative group cursor-pointer border border-outline-variant/20 rounded-lg p-3 hover:bg-surface-container transition-colors">
+<div class="flex justify-between items-start mb-1">
+<span class="text-[10px] font-bold text-error uppercase">Interruption</span>
+<div class="w-3 h-3 rounded-full bg-error"></div>
+</div>
+<p class="text-[9px] leading-tight text-on-surface-variant">Bugs, urgent issues, reactive</p>
+<input class="absolute inset-0 opacity-0 cursor-pointer" name="category" type="radio"/>
+</div>
+<!-- Personal -->
+<div class="relative group cursor-pointer border border-outline-variant/20 rounded-lg p-3 hover:bg-surface-container transition-colors">
+<div class="flex justify-between items-start mb-1">
+<span class="text-[10px] font-bold text-tertiary-container uppercase">Personal</span>
+<div class="w-3 h-3 rounded-full bg-tertiary-container"></div>
+</div>
+<p class="text-[9px] leading-tight text-on-surface-variant">Breaks, personal tasks</p>
+<input class="absolute inset-0 opacity-0 cursor-pointer" name="category" type="radio"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Sheet Footer -->
+<div class="p-6 border-t border-outline-variant/10 bg-surface flex flex-col gap-3">
+<button class="w-full py-3 bg-primary text-white font-bold rounded-md hover:bg-primary-container transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="save">save</span>
+                    Save Entry
+                </button>
+<button class="w-full py-3 text-on-surface-variant font-medium rounded-md hover:bg-surface-container transition-colors border border-transparent">
+                    Cancel
+                </button>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation Bar (Shared Component - Mobile Only) -->
+<nav class="lg:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-2 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-t border-[#c3c6d7]/15 shadow-[0_-4px_12px_rgba(0,0,0,0.03)] z-50">
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-['Inter'] text-[10px] font-medium">Dash</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span class="font-['Inter'] text-[10px] font-medium">Today</span>
+</a>
+<!-- Active Tab Mapping Logic -->
+<a class="flex flex-col items-center justify-center text-[#004ac6] dark:text-blue-400 bg-[#eff4ff] dark:bg-blue-900/20 rounded-xl px-3 py-1 scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="fact_check">fact_check</span>
+<span class="font-['Inter'] text-[10px] font-medium">Check</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-['Inter'] text-[10px] font-medium">Set</span>
+</a>
+</nav>
+</body></html>

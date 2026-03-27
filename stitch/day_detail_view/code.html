@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Day Detail - Architectural Workspace</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-bright": "#f8f9ff",
+              "outline": "#737686",
+              "surface-container-highest": "#d3e4fe",
+              "tertiary-fixed": "#e9ddff",
+              "secondary-container": "#fea619",
+              "tertiary-container": "#7d4ce7",
+              "tertiary-fixed-dim": "#d0bcff",
+              "on-error-container": "#93000a",
+              "surface": "#f8f9ff",
+              "on-primary-fixed-variant": "#003ea8",
+              "primary-fixed-dim": "#b4c5ff",
+              "surface-container-low": "#eff4ff",
+              "surface-tint": "#0053db",
+              "on-primary-container": "#eeefff",
+              "primary-container": "#2563eb",
+              "tertiary": "#632ecd",
+              "on-secondary": "#ffffff",
+              "surface-dim": "#cbdbf5",
+              "surface-container-high": "#dce9ff",
+              "primary": "#004ac6",
+              "outline-variant": "#c3c6d7",
+              "secondary": "#855300",
+              "secondary-fixed": "#ffddb8",
+              "error-container": "#ffdad6",
+              "on-surface-variant": "#434655",
+              "on-primary": "#ffffff",
+              "background": "#f8f9ff",
+              "primary-fixed": "#dbe1ff",
+              "inverse-primary": "#b4c5ff",
+              "on-tertiary-fixed-variant": "#5516be",
+              "on-secondary-container": "#684000",
+              "on-tertiary-container": "#f6edff",
+              "on-surface": "#0b1c30",
+              "error": "#ba1a1a",
+              "on-error": "#ffffff",
+              "on-background": "#0b1c30",
+              "surface-variant": "#d3e4fe",
+              "inverse-on-surface": "#eaf1ff",
+              "on-secondary-fixed": "#2a1700",
+              "surface-container": "#e5eeff",
+              "surface-container-lowest": "#ffffff",
+              "on-primary-fixed": "#00174b",
+              "on-tertiary": "#ffffff",
+              "on-secondary-fixed-variant": "#653e00",
+              "inverse-surface": "#213145",
+              "secondary-fixed-dim": "#ffb95f",
+              "on-tertiary-fixed": "#23005c"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      body { font-family: 'Inter', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen">
+<!-- Navigation Drawer (Desktop) -->
+<aside class="hidden lg:flex flex-col p-4 justify-between h-screen fixed left-0 top-0 h-full w-64 z-50 bg-[#213145] dark:bg-slate-950 shadow-2xl shadow-blue-900/10">
+<div>
+<div class="text-white font-black tracking-tight text-xl mb-8">Disciplined Canvas</div>
+<nav class="space-y-1">
+<a class="text-[#434655] hover:text-white px-4 py-3 flex items-center gap-3 hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-['Inter'] text-[11px] uppercase tracking-widest font-medium">Dashboard</span>
+</a>
+<a class="bg-[#2563eb] text-white rounded-md mx-2 px-4 py-3 flex items-center gap-3 transition-all duration-200 scale-[0.98]" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span class="font-['Inter'] text-[11px] uppercase tracking-widest font-medium">Today</span>
+</a>
+<a class="text-[#434655] hover:text-white px-4 py-3 flex items-center gap-3 hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="fact_check">fact_check</span>
+<span class="font-['Inter'] text-[11px] uppercase tracking-widest font-medium">Check-In</span>
+</a>
+</nav>
+</div>
+<div class="space-y-1 border-t border-white/10 pt-4">
+<a class="text-[#434655] hover:text-white px-4 py-3 flex items-center gap-3 hover:bg-white/5 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-['Inter'] text-[11px] uppercase tracking-widest font-medium">Settings</span>
+</a>
+</div>
+</aside>
+<!-- Top App Bar (Mobile) -->
+<header class="fixed top-0 w-full z-40 bg-[#f8f9ff] dark:bg-slate-950 border-b border-[#c3c6d7]/15 dark:border-slate-800/50 flex items-center justify-between px-6 h-16 w-full lg:hidden">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[#004ac6]" data-icon="grid_view">grid_view</span>
+<span class="text-lg font-bold tracking-tighter text-[#213145] dark:text-slate-100">Architectural Workspace</span>
+</div>
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-[10px] text-white font-bold overflow-hidden">
+<img alt="Technical Lead Profile" data-alt="close-up portrait of a professional man in a tech environment with neutral lighting and sharp focus" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCx6M_36qOzMmMETPbwZ-6LfA46PCJhfFAyPz9AgY5WPzXR2n3Ld5o7JUVnk_1dG3fCnVk4qZp6eNHa2fzwHgUtIjnFeXQn-bdQdezqtCeZJ7iVumXj0cOIX5_OTLNRC9Ukm-FizkGrnhGjYlnR1H7BkKMy9oCBeqSXlYFaN-FKxKFKJe308p5DdKKlGhnkBfRM0KzSKIh6uRFasvHZ7w9K9K3ZzXTOZbmi3w08HrNPUWzDcDreYO0lKRM4UE6FuKfqm7J9kxKfphkB"/>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="lg:ml-64 pt-20 lg:pt-8 pb-32 px-4 lg:px-12 max-w-7xl mx-auto">
+<!-- Reconstructed Banner -->
+<div class="mb-8 flex items-center gap-3 bg-surface-container-low px-4 py-2 rounded-lg border border-outline-variant/15">
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="history_edu">history_edu</span>
+<p class="text-on-surface-variant text-[11px] font-medium tracking-wide">This day was reconstructed from memory</p>
+</div>
+<!-- Header Section -->
+<div class="mb-12">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<div class="flex items-center gap-4 mb-2">
+<button class="w-10 h-10 flex items-center justify-center rounded-md hover:bg-surface-container-high transition-colors text-outline">
+<span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
+</button>
+<h1 class="text-2xl font-semibold tracking-tight font-headline">Wednesday, March 26, 2026</h1>
+<button class="w-10 h-10 flex items-center justify-center rounded-md hover:bg-surface-container-high transition-colors text-outline">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+<p class="text-on-surface-variant text-sm font-medium ml-14">Week 13 • Sprint 04 Focus</p>
+</div>
+<button class="bg-primary text-white px-6 py-2.5 rounded-md font-medium text-sm flex items-center gap-2 hover:opacity-90 transition-opacity self-start md:self-auto">
+<span class="material-symbols-outlined text-lg" data-icon="add">add</span>
+                    Add Entry
+                </button>
+</div>
+</div>
+<!-- Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+<!-- Left Column: Entry Cards -->
+<div class="lg:col-span-7 space-y-4">
+<div class="flex items-center justify-between mb-4 px-2">
+<h2 class="text-xs uppercase tracking-[0.2em] font-bold text-outline">Timeline Entries</h2>
+<span class="text-xs text-outline font-medium">7.5 Hours Logged</span>
+</div>
+<!-- Card 1: Deep Work -->
+<div class="group relative bg-surface-container-lowest rounded-lg flex items-stretch overflow-hidden transition-all duration-200 border border-transparent hover:border-outline-variant/20 hover:shadow-sm">
+<div class="w-1 flex-shrink-0 bg-primary-container"></div>
+<div class="p-4 flex items-center gap-4 w-full">
+<div class="flex-shrink-0 text-outline opacity-20 group-hover:opacity-100 transition-opacity cursor-grab">
+<span class="material-symbols-outlined" data-icon="drag_indicator">drag_indicator</span>
+</div>
+<div class="flex-grow">
+<div class="flex items-center gap-2 mb-1">
+<h3 class="font-bold text-on-surface">System Architecture Refactor</h3>
+<span class="bg-primary-container/10 text-primary-container text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">Deep Work</span>
+</div>
+<p class="text-on-surface-variant text-sm leading-relaxed">Redesigned the notification microservice schema for improved throughput.</p>
+</div>
+<div class="flex flex-col items-end gap-3">
+<span class="bg-surface-container text-on-surface-variant text-[11px] font-mono px-2 py-1 rounded">3h 45m</span>
+<div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span></button>
+<button class="p-1.5 text-outline hover:text-error transition-colors"><span class="material-symbols-outlined text-[18px]" data-icon="delete">delete</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 2: Shallow Work -->
+<div class="group relative bg-surface-container-lowest rounded-lg flex items-stretch overflow-hidden transition-all duration-200 border border-transparent hover:border-outline-variant/20 hover:shadow-sm">
+<div class="w-1 flex-shrink-0 bg-secondary-container"></div>
+<div class="p-4 flex items-center gap-4 w-full">
+<div class="flex-shrink-0 text-outline opacity-20 group-hover:opacity-100 transition-opacity cursor-grab">
+<span class="material-symbols-outlined" data-icon="drag_indicator">drag_indicator</span>
+</div>
+<div class="flex-grow">
+<div class="flex items-center gap-2 mb-1">
+<h3 class="font-bold text-on-surface">Sprint Planning &amp; Triage</h3>
+<span class="bg-secondary-container/10 text-on-secondary-container text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">Shallow Work</span>
+</div>
+<p class="text-on-surface-variant text-sm leading-relaxed">Reviewed Q2 roadmap and assigned tickets for the upcoming core UI overhaul.</p>
+</div>
+<div class="flex flex-col items-end gap-3">
+<span class="bg-surface-container text-on-surface-variant text-[11px] font-mono px-2 py-1 rounded">1h 15m</span>
+<div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span></button>
+<button class="p-1.5 text-outline hover:text-error transition-colors"><span class="material-symbols-outlined text-[18px]" data-icon="delete">delete</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 3: Personal -->
+<div class="group relative bg-surface-container-lowest rounded-lg flex items-stretch overflow-hidden transition-all duration-200 border border-transparent hover:border-outline-variant/20 hover:shadow-sm">
+<div class="w-1 flex-shrink-0 bg-tertiary-container"></div>
+<div class="p-4 flex items-center gap-4 w-full">
+<div class="flex-shrink-0 text-outline opacity-20 group-hover:opacity-100 transition-opacity cursor-grab">
+<span class="material-symbols-outlined" data-icon="drag_indicator">drag_indicator</span>
+</div>
+<div class="flex-grow">
+<div class="flex items-center gap-2 mb-1">
+<h3 class="font-bold text-on-surface">Skill Acquisition: Rust</h3>
+<span class="bg-tertiary-container/10 text-tertiary-container text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">Personal</span>
+</div>
+<p class="text-on-surface-variant text-sm leading-relaxed">Chapter 4 of 'The Book'—Understanding Ownership and Borrowing.</p>
+</div>
+<div class="flex flex-col items-end gap-3">
+<span class="bg-surface-container text-on-surface-variant text-[11px] font-mono px-2 py-1 rounded">2h 30m</span>
+<div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span></button>
+<button class="p-1.5 text-outline hover:text-error transition-colors"><span class="material-symbols-outlined text-[18px]" data-icon="delete">delete</span></button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Summary Panel -->
+<div class="lg:col-span-5 space-y-6 lg:sticky lg:top-8">
+<!-- Time Breakdown Card -->
+<div class="bg-surface-container-lowest rounded-xl p-8 border border-outline-variant/10">
+<h3 class="text-sm font-bold tracking-tight mb-8">Time Allocation</h3>
+<div class="flex flex-col items-center">
+<!-- Custom Donut Chart Representation -->
+<div class="relative w-48 h-48 mb-8">
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 100 100">
+<circle class="text-surface-container-low" cx="50" cy="50" fill="transparent" r="40" stroke="currentColor" stroke-width="12"></circle>
+<!-- Deep Work Segment -->
+<circle class="text-primary-container" cx="50" cy="50" fill="transparent" r="40" stroke="currentColor" stroke-dasharray="251.2" stroke-dashoffset="125.6" stroke-width="12"></circle>
+<!-- Personal Segment -->
+<circle class="text-tertiary-container" cx="50" cy="50" fill="transparent" r="40" stroke="currentColor" stroke-dasharray="251.2" stroke-dashoffset="200" stroke-width="12"></circle>
+<!-- Shallow Segment -->
+<circle class="text-secondary-container" cx="50" cy="50" fill="transparent" r="40" stroke="currentColor" stroke-dasharray="251.2" stroke-dashoffset="230" stroke-width="12"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-3xl font-black text-on-surface">7.5</span>
+<span class="text-[10px] uppercase tracking-widest font-bold text-outline">Total Hours</span>
+</div>
+</div>
+<!-- Legend -->
+<div class="grid grid-cols-2 gap-4 w-full">
+<div class="flex items-center gap-2">
+<div class="w-2.5 h-2.5 rounded-sm bg-primary-container"></div>
+<span class="text-[11px] font-medium text-on-surface-variant">Deep Work (50%)</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-2.5 h-2.5 rounded-sm bg-tertiary-container"></div>
+<span class="text-[11px] font-medium text-on-surface-variant">Personal (33%)</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-2.5 h-2.5 rounded-sm bg-secondary-container"></div>
+<span class="text-[11px] font-medium text-on-surface-variant">Shallow (17%)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Narrative Summary -->
+<div class="bg-surface-container-low rounded-xl p-6">
+<h3 class="text-xs uppercase tracking-widest font-black text-primary mb-4">Daily Narrative</h3>
+<p class="text-sm leading-relaxed text-on-surface-variant font-medium">
+                        Today focused on foundational structural work. The morning's deep work session on the notification microservice was highly productive, resulting in a cleaner API interface. Sprint planning was efficient, though personal learning time was slightly truncated by an impromptu triage session. Overall, a high-density output day with minimal context switching.
+                    </p>
+</div>
+<!-- Observations -->
+<div class="bg-surface-container-lowest rounded-xl p-6 border border-outline-variant/10">
+<h3 class="text-sm font-bold tracking-tight mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-lg" data-icon="lightbulb">lightbulb</span>
+                        Observations
+                    </h3>
+<ul class="space-y-4">
+<li class="flex gap-3">
+<span class="w-1.5 h-1.5 rounded-full bg-outline-variant mt-1.5 flex-shrink-0"></span>
+<p class="text-sm text-on-surface-variant">Energy levels peaked between 10:00 AM and 12:30 PM. Target deep work for this window tomorrow.</p>
+</li>
+<li class="flex gap-3">
+<span class="w-1.5 h-1.5 rounded-full bg-outline-variant mt-1.5 flex-shrink-0"></span>
+<p class="text-sm text-on-surface-variant">Context switching during the triage session added 15 mins of "recovery time" before getting back to Rust learning.</p>
+</li>
+<li class="flex gap-3">
+<span class="w-1.5 h-1.5 rounded-full bg-outline-variant mt-1.5 flex-shrink-0"></span>
+<p class="text-sm text-on-surface-variant">Reconstructed from memory—manual entry late in the evening. Real-time logging preferred.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Nav (Mobile) -->
+<nav class="lg:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-2 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md z-50 border-t border-[#c3c6d7]/15 shadow-[0_-4px_12px_rgba(0,0,0,0.03)]">
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-['Inter'] text-[10px] font-medium">Dash</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#004ac6] dark:text-blue-400 bg-[#eff4ff] dark:bg-blue-900/20 rounded-xl px-3 py-1 scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+<span class="font-['Inter'] text-[10px] font-medium">Today</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400" href="#">
+<span class="material-symbols-outlined" data-icon="fact_check">fact_check</span>
+<span class="font-['Inter'] text-[10px] font-medium">Check</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-['Inter'] text-[10px] font-medium">Set</span>
+</a>
+</nav>
+</body></html>
