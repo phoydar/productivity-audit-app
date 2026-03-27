@@ -3,10 +3,11 @@
 import { useEffect, useState, use } from 'react';
 import { useRouter } from 'next/navigation';
 import { format, addDays, subDays, parseISO } from 'date-fns';
-import { ChevronLeft, ChevronRight, Plus, AlertTriangle } from 'lucide-react';
+import { ChevronLeft, ChevronRight, AlertTriangle } from 'lucide-react';
 import { EntryCard } from '@/components/day/entry-card';
 import { TimeBreakdown } from '@/components/day/time-breakdown';
 import { SummaryView } from '@/components/day/summary-view';
+import { QuickAdd } from '@/components/dashboard/quick-add';
 
 interface Entry {
   id: string;
@@ -115,10 +116,7 @@ export default function DayDetailPage({ params }: { params: Promise<{ date: stri
               </button>
             )}
           </div>
-          <button className="flex items-center gap-2 px-5 py-2.5 bg-primary text-on-primary rounded-md font-semibold text-sm hover:opacity-90 transition-all">
-            <Plus size={16} />
-            Add Entry
-          </button>
+          <QuickAdd forDate={date} onEntryAdded={() => fetchLog()} />
         </div>
 
         {loading ? (
