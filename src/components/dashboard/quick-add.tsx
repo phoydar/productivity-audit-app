@@ -1,10 +1,11 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Plus, X, Tag } from 'lucide-react';
-import { format } from 'date-fns';
+import { Plus, X, Tag, Calendar } from 'lucide-react';
+import { format, subDays, parseISO, isAfter, startOfDay } from 'date-fns';
 
 const DURATION_OPTIONS = ['15m', '30m', '45m', '1h', '1.5h', '2h', '3h', '4h+'];
+const RETROACTIVE_LIMIT_DAYS = 30;
 const CATEGORIES = [
   { value: 'DEEP_WORK', label: 'Deep Work', color: 'bg-primary-container' },
   { value: 'SHALLOW_WORK', label: 'Shallow', color: 'bg-secondary-container' },
@@ -21,12 +22,13 @@ function parseDuration(label: string): number {
   return map[label] ?? 60;
 }
 
-export function QuickAdd({ onEntryAdded }: { onEntryAdded?: () => void }) {
+export function QuickAdd({ onEntryAdded, forDate }: { onEntryAdded?: () => void; forDate?: string }) {
   const [open, setOpen] = useState(false);
   const [task, setTask] = useState('');
   const [outcome, setOutcome] = useState('');
   const [duration, setDuration] = useState('1h');
   const [category, setCategory] = useState('DEEP_WORK');
+  const [targetDate, setTargetDate] = useState(forDate ?? format(new Date(), 'yyyy-MM-dd'));
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [customTags, setCustomTags] = useState<string[]>([]);
   const [newTag, setNewTag] = useState('');
@@ -34,6 +36,15 @@ export function QuickAdd({ onEntryAdded }: { onEntryAdded?: () => void }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const tagInputRef = useRef<HTMLInputElement>(null);
+
+  const today = format(new Date(), 'yyyy-MM-dd');
+  const minDate = format(subDays(new Date(), RETROACTIVE_LIMIT_DAYS), 'yyyy-MM-dd');
+  const isRetroactive = targetDate !== today;
+
+  // Sync if forDate prop changes (e.g. navigating between day pages)
+  useEffect(() => {
+    if (forDate) setTargetDate(forDate);
+  }, [forDate]);
 
   const allTags = [...DEFAULT_TAGS, ...customTags];
 
@@ -75,14 +86,22 @@ export function QuickAdd({ onEntryAdded }: { onEntryAdded?: () => void }) {
   async function handleSubmit() {
     setLoading(true);
     setError(null);
-    const today = format(new Date(), 'yyyy-MM-dd');
+
+    // Validate date is within the 30-day window
+    const parsedTarget = parseISO(targetDate);
+    const earliest = startOfDay(subDays(new Date(), RETROACTIVE_LIMIT_DAYS));
+    if (isAfter(earliest, parsedTarget)) {
+      setError(`Can only log activities within the last ${RETROACTIVE_LIMIT_DAYS} days`);
+      setLoading(false);
+      return;
+    }
 
     // Prepend tags to the task if any are selected
     const tagPrefix = selectedTags.length > 0 ? `[${selectedTags.join(', ')}] ` : '';
     const fullTask = tagPrefix + task;
 
     try {
-      const res = await fetch(`/api/logs/${today}/entries`, {
+      const res = await fetch(`/api/logs/${targetDate}/entries`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -90,6 +109,7 @@ export function QuickAdd({ onEntryAdded }: { onEntryAdded?: () => void }) {
           outcome,
           durationMinutes: parseDuration(duration),
           category,
+          isReconstructed: targetDate !== format(new Date(), 'yyyy-MM-dd'),
         }),
       });
       if (res.ok) {
@@ -98,6 +118,7 @@ export function QuickAdd({ onEntryAdded }: { onEntryAdded?: () => void }) {
         setDuration('1h');
         setCategory('DEEP_WORK');
         setSelectedTags([]);
+        if (!forDate) setTargetDate(format(new Date(), 'yyyy-MM-dd'));
         setOpen(false);
         onEntryAdded?.();
       } else {
@@ -131,6 +152,26 @@ export function QuickAdd({ onEntryAdded }: { onEntryAdded?: () => void }) {
           <X size={16} />
         </button>
       </div>
+
+      {/* Date picker */}
+      {!forDate && (
+        <div className="flex items-center gap-3">
+          <Calendar size={14} className="text-on-surface-variant shrink-0" />
+          <input
+            type="date"
+            value={targetDate}
+            min={minDate}
+            max={today}
+            onChange={(e) => setTargetDate(e.target.value)}
+            className="px-3 py-1.5 bg-surface-container-lowest border border-outline-variant/20 rounded-md text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all"
+          />
+          {isRetroactive && (
+            <span className="text-xs font-medium text-secondary-container bg-secondary-container/10 px-2 py-0.5 rounded">
+              Retroactive — will be marked as reconstructed
+            </span>
+          )}
+        </div>
+      )}
 
       <input
         type="text"
