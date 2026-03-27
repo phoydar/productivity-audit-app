@@ -12,17 +12,19 @@ COPY . .
 RUN mkdir -p data && npm run build
 
 FROM base AS runner
-WORKDIR /app
 ENV NODE_ENV=production
+
+# Standalone output nests files under /app/ because turbopack.root
+# points to the parent directory. Copy to / to preserve that structure,
+# so server.js lands at /app/server.js.
 COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
-COPY --from=builder /app/public ./public
-# Debug: show where server.js actually is in the standalone output
-RUN echo "=== standalone contents ===" && ls -la && echo "=== searching for server.js ===" && find . -name "server.js" -maxdepth 3
+COPY --from=builder /app/.next/static /app/.next/static
+COPY --from=builder /app/public /app/public
 
 # Create data directory for SQLite
 RUN mkdir -p /app/data
 
+WORKDIR /app
 EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
