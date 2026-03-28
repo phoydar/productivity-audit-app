@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { NextRequest, NextResponse } from 'next/server';
 import { checkAuth } from '@/lib/auth';
 import { getLogByDate, getOrCreateLog, updateLog } from '@/lib/services/log-service';
