@@ -55,11 +55,14 @@ export async function recalculateLogTotals(date: string) {
     (acc, entry) => {
       const hours = entry.durationMinutes / 60;
       switch (entry.category) {
-        case 'DEEP_WORK':
-          acc.totalDeepWork += hours;
+        case 'HIGH_FOCUS':
+          acc.totalHighFocus += hours;
           break;
-        case 'SHALLOW_WORK':
-          acc.totalShallowWork += hours;
+        case 'MEDIUM':
+          acc.totalMedium += hours;
+          break;
+        case 'LOW_FOCUS':
+          acc.totalLowFocus += hours;
           break;
         case 'MEETING':
           acc.totalMeetings += hours;
@@ -73,7 +76,7 @@ export async function recalculateLogTotals(date: string) {
       }
       return acc;
     },
-    { totalDeepWork: 0, totalShallowWork: 0, totalMeetings: 0, totalInterruptions: 0, totalPersonalMisc: 0 }
+    { totalHighFocus: 0, totalMedium: 0, totalLowFocus: 0, totalMeetings: 0, totalInterruptions: 0, totalPersonalMisc: 0 }
   );
 
   await db

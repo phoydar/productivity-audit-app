@@ -24,8 +24,8 @@ export function TodayStatus() {
           const { log } = await res.json();
           setData({
             entryCount: log?.entries?.length ?? 0,
-            totalHours: (log?.totalDeepWork ?? 0) + (log?.totalShallowWork ?? 0) + (log?.totalMeetings ?? 0) + (log?.totalInterruptions ?? 0) + (log?.totalPersonalMisc ?? 0),
-            deepWorkHours: log?.totalDeepWork ?? 0,
+            totalHours: (log?.totalHighFocus ?? 0) + (log?.totalMedium ?? 0) + (log?.totalLowFocus ?? 0) + (log?.totalMeetings ?? 0) + (log?.totalInterruptions ?? 0) + (log?.totalPersonalMisc ?? 0),
+            deepWorkHours: log?.totalHighFocus ?? 0,
             deepWorkTarget: 3,
             expectedHours: 8,
           });
@@ -81,7 +81,7 @@ export function TodayStatus() {
 
       <div className="p-6 bg-surface-container-lowest rounded-lg">
         <div className="flex justify-between items-start mb-4">
-          <p className="text-sm font-medium text-on-surface-variant uppercase tracking-tighter">Deep Work</p>
+          <p className="text-sm font-medium text-on-surface-variant uppercase tracking-tighter">High Focus</p>
           <Brain size={20} className="text-tertiary" />
         </div>
         <div className="flex items-baseline gap-2">

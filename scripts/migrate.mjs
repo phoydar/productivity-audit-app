@@ -13,8 +13,9 @@ const tables = [
     log_date TEXT NOT NULL UNIQUE,
     summary TEXT,
     observations TEXT,
-    total_deep_work DOUBLE PRECISION NOT NULL DEFAULT 0,
-    total_shallow_work DOUBLE PRECISION NOT NULL DEFAULT 0,
+    total_high_focus DOUBLE PRECISION NOT NULL DEFAULT 0,
+    total_medium DOUBLE PRECISION NOT NULL DEFAULT 0,
+    total_low_focus DOUBLE PRECISION NOT NULL DEFAULT 0,
     total_interruptions DOUBLE PRECISION NOT NULL DEFAULT 0,
     total_meetings DOUBLE PRECISION NOT NULL DEFAULT 0,
     total_personal_misc DOUBLE PRECISION NOT NULL DEFAULT 0,
@@ -29,7 +30,7 @@ const tables = [
     task TEXT NOT NULL,
     outcome TEXT NOT NULL,
     duration_minutes INTEGER NOT NULL,
-    category TEXT NOT NULL CHECK(category IN ('DEEP_WORK','SHALLOW_WORK','MEETING','INTERRUPTION','PERSONAL_MISC')),
+    category TEXT NOT NULL CHECK(category IN ('HIGH_FOCUS','MEDIUM','LOW_FOCUS','MEETING','INTERRUPTION','PERSONAL_MISC')),
     sort_order INTEGER NOT NULL DEFAULT 0,
     is_reconstructed BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TEXT NOT NULL DEFAULT now()::TEXT,
@@ -58,7 +59,7 @@ const tables = [
   `CREATE TABLE IF NOT EXISTS todo (
     id TEXT PRIMARY KEY,
     task TEXT NOT NULL,
-    category TEXT NOT NULL CHECK(category IN ('DEEP_WORK','SHALLOW_WORK','MEETING','INTERRUPTION','PERSONAL_MISC')),
+    category TEXT NOT NULL CHECK(category IN ('HIGH_FOCUS','MEDIUM','LOW_FOCUS','MEETING','INTERRUPTION','PERSONAL_MISC')),
     estimated_minutes INTEGER NOT NULL,
     priority INTEGER NOT NULL DEFAULT 0,
     tags TEXT,
@@ -85,18 +86,40 @@ const indexes = [
   `CREATE INDEX IF NOT EXISTS idx_todo_created ON todo(created_at)`,
 ];
 
-// Idempotent column additions for existing databases
+// Rename old category columns if they exist (one-time migration from DEEP_WORK/SHALLOW_WORK schema)
 const alterations = [
-  `ALTER TABLE daily_log ADD COLUMN IF NOT EXISTS total_meetings DOUBLE PRECISION NOT NULL DEFAULT 0`,
+  `DO $$ BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='daily_log' AND column_name='total_deep_work') THEN
+      ALTER TABLE daily_log RENAME COLUMN total_deep_work TO total_high_focus;
+    END IF;
+  END $$`,
+  `DO $$ BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='daily_log' AND column_name='total_shallow_work') THEN
+      ALTER TABLE daily_log RENAME COLUMN total_shallow_work TO total_low_focus;
+    END IF;
+  END $$`,
+  `ALTER TABLE daily_log ADD COLUMN IF NOT EXISTS total_medium DOUBLE PRECISION NOT NULL DEFAULT 0`,
+  `DO $$ BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='log_entry' AND column_name='category') THEN
+      ALTER TABLE log_entry DROP CONSTRAINT IF EXISTS log_entry_category_check;
+      ALTER TABLE log_entry ADD CONSTRAINT log_entry_category_check CHECK(category IN ('HIGH_FOCUS','MEDIUM','LOW_FOCUS','MEETING','INTERRUPTION','PERSONAL_MISC'));
+    END IF;
+  END $$`,
+  `DO $$ BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='todo' AND column_name='category') THEN
+      ALTER TABLE todo DROP CONSTRAINT IF EXISTS todo_category_check;
+      ALTER TABLE todo ADD CONSTRAINT todo_category_check CHECK(category IN ('HIGH_FOCUS','MEDIUM','LOW_FOCUS','MEETING','INTERRUPTION','PERSONAL_MISC'));
+    END IF;
+  END $$`,
 ];
 
 async function migrate() {
   console.log('[migrate] Running startup migration...');
   await client.connect();
-  for (const sql of [...tables, ...indexes]) {
+  for (const sql of alterations) {
     await client.query(sql);
   }
-  for (const sql of alterations) {
+  for (const sql of [...tables, ...indexes]) {
     await client.query(sql);
   }
   await client.end();

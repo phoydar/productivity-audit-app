@@ -24,8 +24,9 @@ interface DayLog {
   logDate: string;
   summary: string | null;
   observations: string | null;
-  totalDeepWork: number;
-  totalShallowWork: number;
+  totalHighFocus: number;
+  totalMedium: number;
+  totalLowFocus: number;
   totalMeetings: number;
   totalInterruptions: number;
   totalPersonalMisc: number;
@@ -172,8 +173,9 @@ export default function DayDetailPage({ params }: { params: Promise<{ date: stri
               <div className="bg-surface-container-lowest rounded-lg p-6">
                 <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-4">Time Allocation</h4>
                 <TimeBreakdown
-                  deepWork={log?.totalDeepWork ?? 0}
-                  shallowWork={log?.totalShallowWork ?? 0}
+                  highFocus={log?.totalHighFocus ?? 0}
+                  medium={log?.totalMedium ?? 0}
+                  lowFocus={log?.totalLowFocus ?? 0}
                   meetings={log?.totalMeetings ?? 0}
                   interruptions={log?.totalInterruptions ?? 0}
                   personalMisc={log?.totalPersonalMisc ?? 0}

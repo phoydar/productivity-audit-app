@@ -4,8 +4,9 @@ import { useState, useEffect, useRef } from 'react';
 import { Check, Plus, X, CircleDot, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
 
 const CATEGORIES = [
-  { value: 'DEEP_WORK', label: 'Deep', color: 'bg-primary-container' },
-  { value: 'SHALLOW_WORK', label: 'Shallow', color: 'bg-secondary-container' },
+  { value: 'HIGH_FOCUS', label: 'High Focus', color: 'bg-primary-container' },
+  { value: 'MEDIUM', label: 'Medium', color: 'bg-indigo-500' },
+  { value: 'LOW_FOCUS', label: 'Low Focus', color: 'bg-secondary-container' },
   { value: 'MEETING', label: 'Meeting', color: 'bg-teal-500' },
   { value: 'INTERRUPTION', label: 'Interruption', color: 'bg-error' },
   { value: 'PERSONAL_MISC', label: 'Personal', color: 'bg-tertiary-container' },
@@ -54,7 +55,7 @@ export function TodoPanel({ onTodoCompleted }: { onTodoCompleted?: () => void })
 
   // Add form state
   const [newTask, setNewTask] = useState('');
-  const [newCategory, setNewCategory] = useState('DEEP_WORK');
+  const [newCategory, setNewCategory] = useState('HIGH_FOCUS');
   const [newDuration, setNewDuration] = useState('1h');
   const [newPriority, setNewPriority] = useState(0);
   const [addLoading, setAddLoading] = useState(false);
@@ -102,7 +103,7 @@ export function TodoPanel({ onTodoCompleted }: { onTodoCompleted?: () => void })
       });
       if (res.ok) {
         setNewTask('');
-        setNewCategory('DEEP_WORK');
+        setNewCategory('HIGH_FOCUS');
         setNewDuration('1h');
         setNewPriority(0);
         setShowAdd(false);

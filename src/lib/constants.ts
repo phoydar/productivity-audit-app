@@ -1,15 +1,16 @@
 import { CategoryType } from '@/types';
 
 export const CATEGORIES: Record<CategoryType, { label: string; color: string; bgColor: string }> = {
-  DEEP_WORK: { label: 'Deep Work', color: '#2563eb', bgColor: 'bg-blue-600' },
-  SHALLOW_WORK: { label: 'Shallow Work', color: '#f59e0b', bgColor: 'bg-amber-500' },
+  HIGH_FOCUS: { label: 'High Focus', color: '#2563eb', bgColor: 'bg-blue-600' },
+  MEDIUM: { label: 'Medium', color: '#6366f1', bgColor: 'bg-indigo-500' },
+  LOW_FOCUS: { label: 'Low Focus', color: '#f59e0b', bgColor: 'bg-amber-500' },
   MEETING: { label: 'Meeting', color: '#0d9488', bgColor: 'bg-teal-500' },
   INTERRUPTION: { label: 'Interruption', color: '#ef4444', bgColor: 'bg-red-500' },
   PERSONAL_MISC: { label: 'Personal / Misc', color: '#8b5cf6', bgColor: 'bg-violet-500' },
 };
 
 export const DEFAULT_SETTINGS = {
-  deepWorkTargetHours: 3,
+  highFocusTargetHours: 3,
   interruptionWarningPct: 20,
   expectedWorkHours: 8,
 };

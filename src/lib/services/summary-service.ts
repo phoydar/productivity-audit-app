@@ -18,11 +18,14 @@ export async function generateSummary(date: string) {
     (acc, entry) => {
       const hours = entry.durationMinutes / 60;
       switch (entry.category as CategoryType) {
-        case 'DEEP_WORK':
-          acc.deepWork += hours;
+        case 'HIGH_FOCUS':
+          acc.highFocus += hours;
           break;
-        case 'SHALLOW_WORK':
-          acc.shallowWork += hours;
+        case 'MEDIUM':
+          acc.medium += hours;
+          break;
+        case 'LOW_FOCUS':
+          acc.lowFocus += hours;
           break;
         case 'MEETING':
           acc.meetings += hours;
@@ -37,38 +40,37 @@ export async function generateSummary(date: string) {
       acc.total += hours;
       return acc;
     },
-    { deepWork: 0, shallowWork: 0, meetings: 0, interruptions: 0, personalMisc: 0, total: 0 }
+    { highFocus: 0, medium: 0, lowFocus: 0, meetings: 0, interruptions: 0, personalMisc: 0, total: 0 }
   );
 
   const totalHours = breakdown.total;
-  const deepPct = totalHours > 0 ? Math.round((breakdown.deepWork / totalHours) * 100) : 0;
+  const highFocusPct = totalHours > 0 ? Math.round((breakdown.highFocus / totalHours) * 100) : 0;
   const interruptPct = totalHours > 0 ? Math.round((breakdown.interruptions / totalHours) * 100) : 0;
 
-  // Build narrative summary
   const topCategory = Object.entries(breakdown)
     .filter(([k]) => k !== 'total')
     .sort(([, a], [, b]) => (b as number) - (a as number))[0];
 
   const categoryLabel = {
-    deepWork: 'deep work',
-    shallowWork: 'shallow work',
+    highFocus: 'high focus work',
+    medium: 'medium focus work',
+    lowFocus: 'low focus work',
     meetings: 'meetings',
     interruptions: 'interruptions',
     personalMisc: 'personal/misc tasks',
   }[topCategory[0]] ?? topCategory[0];
 
-  const summary = `Logged ${totalHours.toFixed(1)}h across ${entries.length} activities. The day was primarily spent on ${categoryLabel} (${(((topCategory[1] as number) / totalHours) * 100).toFixed(0)}% of time). Deep work accounted for ${breakdown.deepWork.toFixed(1)}h (${deepPct}%).`;
+  const summary = `Logged ${totalHours.toFixed(1)}h across ${entries.length} activities. The day was primarily spent on ${categoryLabel} (${(((topCategory[1] as number) / totalHours) * 100).toFixed(0)}% of time). High focus work accounted for ${breakdown.highFocus.toFixed(1)}h (${highFocusPct}%).`;
 
-  // Build observations
   const observations: string[] = [];
 
-  if (breakdown.deepWork >= DEFAULT_SETTINGS.deepWorkTargetHours) {
+  if (breakdown.highFocus >= DEFAULT_SETTINGS.highFocusTargetHours) {
     observations.push(
-      `Hit the deep work target (${breakdown.deepWork.toFixed(1)}h vs ${DEFAULT_SETTINGS.deepWorkTargetHours}h goal).`
+      `Hit the high focus target (${breakdown.highFocus.toFixed(1)}h vs ${DEFAULT_SETTINGS.highFocusTargetHours}h goal).`
     );
   } else {
     observations.push(
-      `Deep work fell short of target: ${breakdown.deepWork.toFixed(1)}h vs ${DEFAULT_SETTINGS.deepWorkTargetHours}h goal.`
+      `High focus work fell short of target: ${breakdown.highFocus.toFixed(1)}h vs ${DEFAULT_SETTINGS.highFocusTargetHours}h goal.`
     );
   }
 
@@ -87,8 +89,6 @@ export async function generateSummary(date: string) {
   const observationsText = observations.join(' ');
 
   await updateLog(date, { summary, observations: observationsText });
-
-  // Update generatedAt
   await db.update(dailyLog).set({ generatedAt: new Date().toISOString() }).where(eq(dailyLog.logDate, date));
 
   return {
@@ -109,12 +109,13 @@ export async function getSummary(date: string) {
     summary: log.summary,
     observations: log.observations,
     timeBreakdown: {
-      deepWork: log.totalDeepWork,
-      shallowWork: log.totalShallowWork,
+      highFocus: log.totalHighFocus,
+      medium: log.totalMedium,
+      lowFocus: log.totalLowFocus,
       meetings: log.totalMeetings,
       interruptions: log.totalInterruptions,
       personalMisc: log.totalPersonalMisc,
-      total: log.totalDeepWork + log.totalShallowWork + log.totalMeetings + log.totalInterruptions + log.totalPersonalMisc,
+      total: log.totalHighFocus + log.totalMedium + log.totalLowFocus + log.totalMeetings + log.totalInterruptions + log.totalPersonalMisc,
     },
     workLog: entries,
     generatedAt: log.generatedAt,

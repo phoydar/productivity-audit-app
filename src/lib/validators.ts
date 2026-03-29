@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const categorySchema = z.enum(['DEEP_WORK', 'SHALLOW_WORK', 'MEETING', 'INTERRUPTION', 'PERSONAL_MISC']);
+export const categorySchema = z.enum(['HIGH_FOCUS', 'MEDIUM', 'LOW_FOCUS', 'MEETING', 'INTERRUPTION', 'PERSONAL_MISC']);
 
 export const createEntrySchema = z.object({
   task: z.string().min(10, 'Task description must be at least 10 characters'),
@@ -41,7 +41,7 @@ export const checkinRespondSchema = z.object({
 });
 
 export const settingsSchema = z.object({
-  deepWorkTargetHours: z.number().min(0).max(12).optional(),
+  highFocusTargetHours: z.number().min(0).max(12).optional(),
   interruptionWarningPct: z.number().min(0).max(100).optional(),
   expectedWorkHours: z.number().min(1).max(24).optional(),
 });

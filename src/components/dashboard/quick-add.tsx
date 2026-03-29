@@ -7,8 +7,9 @@ import { format, subDays, parseISO, isAfter, startOfDay } from 'date-fns';
 const DURATION_OPTIONS = ['15m', '30m', '45m', '1h', '1.5h', '2h', '3h', '4h+'];
 const RETROACTIVE_LIMIT_DAYS = 30;
 const CATEGORIES = [
-  { value: 'DEEP_WORK', label: 'Deep Work', color: 'bg-primary-container' },
-  { value: 'SHALLOW_WORK', label: 'Shallow', color: 'bg-secondary-container' },
+  { value: 'HIGH_FOCUS', label: 'High Focus', color: 'bg-primary-container' },
+  { value: 'MEDIUM', label: 'Medium', color: 'bg-indigo-500' },
+  { value: 'LOW_FOCUS', label: 'Low Focus', color: 'bg-secondary-container' },
   { value: 'MEETING', label: 'Meeting', color: 'bg-teal-500' },
   { value: 'INTERRUPTION', label: 'Interruption', color: 'bg-error' },
   { value: 'PERSONAL_MISC', label: 'Personal', color: 'bg-tertiary-container' },
@@ -28,7 +29,7 @@ export function QuickAdd({ onEntryAdded, forDate }: { onEntryAdded?: () => void;
   const [task, setTask] = useState('');
   const [outcome, setOutcome] = useState('');
   const [duration, setDuration] = useState('1h');
-  const [category, setCategory] = useState('DEEP_WORK');
+  const [category, setCategory] = useState('HIGH_FOCUS');
   const [targetDate, setTargetDate] = useState(forDate ?? format(new Date(), 'yyyy-MM-dd'));
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [customTags, setCustomTags] = useState<string[]>([]);
@@ -117,7 +118,7 @@ export function QuickAdd({ onEntryAdded, forDate }: { onEntryAdded?: () => void;
         setTask('');
         setOutcome('');
         setDuration('1h');
-        setCategory('DEEP_WORK');
+        setCategory('HIGH_FOCUS');
         setSelectedTags([]);
         if (!forDate) setTargetDate(format(new Date(), 'yyyy-MM-dd'));
         setOpen(false);

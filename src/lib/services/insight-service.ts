@@ -18,28 +18,25 @@ export async function generateInsights(fromDate: string, toDate: string) {
 
   const generated: Array<{ type: InsightType; message: string; severity: SeverityType; metadata: string }> = [];
 
-  // Calculate averages
-  const avgDeepWork = logs.reduce((s, l) => s + (l.totalDeepWork ?? 0), 0) / logs.length;
+  const avgHighFocus = logs.reduce((s, l) => s + (l.totalHighFocus ?? 0), 0) / logs.length;
   const avgInterruptions = logs.reduce((s, l) => s + (l.totalInterruptions ?? 0), 0) / logs.length;
   const avgTotal =
     logs.reduce(
       (s, l) =>
-        s + (l.totalDeepWork ?? 0) + (l.totalShallowWork ?? 0) + (l.totalMeetings ?? 0) + (l.totalInterruptions ?? 0) + (l.totalPersonalMisc ?? 0),
+        s + (l.totalHighFocus ?? 0) + (l.totalMedium ?? 0) + (l.totalLowFocus ?? 0) + (l.totalMeetings ?? 0) + (l.totalInterruptions ?? 0) + (l.totalPersonalMisc ?? 0),
       0
     ) / logs.length;
   const interruptPct = avgTotal > 0 ? (avgInterruptions / avgTotal) * 100 : 0;
 
-  // Deep work threshold check
-  if (avgDeepWork < DEFAULT_SETTINGS.deepWorkTargetHours) {
+  if (avgHighFocus < DEFAULT_SETTINGS.highFocusTargetHours) {
     generated.push({
       type: 'THRESHOLD',
-      message: `Deep work averaged ${avgDeepWork.toFixed(1)}h/day over the last ${logs.length} days — below the ${DEFAULT_SETTINGS.deepWorkTargetHours}h target.`,
+      message: `High focus work averaged ${avgHighFocus.toFixed(1)}h/day over the last ${logs.length} days — below the ${DEFAULT_SETTINGS.highFocusTargetHours}h target.`,
       severity: 'WARNING',
-      metadata: JSON.stringify({ avgDeepWork, target: DEFAULT_SETTINGS.deepWorkTargetHours, days: logs.length }),
+      metadata: JSON.stringify({ avgHighFocus, target: DEFAULT_SETTINGS.highFocusTargetHours, days: logs.length }),
     });
   }
 
-  // Interruption threshold
   if (interruptPct > DEFAULT_SETTINGS.interruptionWarningPct) {
     generated.push({
       type: 'THRESHOLD',
@@ -49,44 +46,40 @@ export async function generateInsights(fromDate: string, toDate: string) {
     });
   }
 
-  // Trend detection: is deep work declining?
   if (logs.length >= 5) {
     const firstHalf = logs.slice(Math.floor(logs.length / 2));
     const secondHalf = logs.slice(0, Math.floor(logs.length / 2));
-    const firstAvg = firstHalf.reduce((s, l) => s + (l.totalDeepWork ?? 0), 0) / firstHalf.length;
-    const secondAvg = secondHalf.reduce((s, l) => s + (l.totalDeepWork ?? 0), 0) / secondHalf.length;
+    const firstAvg = firstHalf.reduce((s, l) => s + (l.totalHighFocus ?? 0), 0) / firstHalf.length;
+    const secondAvg = secondHalf.reduce((s, l) => s + (l.totalHighFocus ?? 0), 0) / secondHalf.length;
 
     if (secondAvg < firstAvg * 0.8) {
       generated.push({
         type: 'TREND',
-        message: `Deep work is trending downward: ${secondAvg.toFixed(1)}h/day recently vs ${firstAvg.toFixed(1)}h/day earlier.`,
+        message: `High focus work is trending downward: ${secondAvg.toFixed(1)}h/day recently vs ${firstAvg.toFixed(1)}h/day earlier.`,
         severity: 'WARNING',
         metadata: JSON.stringify({ recentAvg: secondAvg, earlierAvg: firstAvg }),
       });
     }
   }
 
-  // Positive: hitting target
-  if (avgDeepWork >= DEFAULT_SETTINGS.deepWorkTargetHours) {
+  if (avgHighFocus >= DEFAULT_SETTINGS.highFocusTargetHours) {
     generated.push({
       type: 'TREND',
-      message: `Deep work averaged ${avgDeepWork.toFixed(1)}h/day — meeting the target. Keep it up.`,
+      message: `High focus work averaged ${avgHighFocus.toFixed(1)}h/day — meeting the target. Keep it up.`,
       severity: 'INFO',
-      metadata: JSON.stringify({ avgDeepWork, target: DEFAULT_SETTINGS.deepWorkTargetHours }),
+      metadata: JSON.stringify({ avgHighFocus, target: DEFAULT_SETTINGS.highFocusTargetHours }),
     });
   }
 
-  // Suggestion
   if (interruptPct > 30) {
     generated.push({
       type: 'SUGGESTION',
-      message: 'Consider time-blocking: reserve 2-3h blocks for deep work with notifications off.',
+      message: 'Consider time-blocking: reserve 2-3h blocks for high focus work with notifications off.',
       severity: 'INFO',
       metadata: JSON.stringify({ trigger: 'high_interruption_pct', interruptPct }),
     });
   }
 
-  // Store insights
   const today = format(new Date(), 'yyyy-MM-dd');
   for (const item of generated) {
     await db.insert(insight).values({

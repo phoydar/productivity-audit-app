@@ -22,16 +22,18 @@ export interface EditPayload {
 }
 
 const CATEGORY_STYLES: Record<string, { label: string; border: string; badge: string; text: string }> = {
-  DEEP_WORK: { label: 'Deep Work', border: 'border-l-primary-container', badge: 'bg-primary-container/10 text-primary-container', text: 'text-primary-container' },
-  SHALLOW_WORK: { label: 'Shallow Work', border: 'border-l-secondary-container', badge: 'bg-secondary-container/10 text-secondary-container', text: 'text-secondary-container' },
+  HIGH_FOCUS: { label: 'High Focus', border: 'border-l-primary-container', badge: 'bg-primary-container/10 text-primary-container', text: 'text-primary-container' },
+  MEDIUM: { label: 'Medium', border: 'border-l-indigo-400', badge: 'bg-indigo-500/10 text-indigo-500', text: 'text-indigo-500' },
+  LOW_FOCUS: { label: 'Low Focus', border: 'border-l-secondary-container', badge: 'bg-secondary-container/10 text-secondary-container', text: 'text-secondary-container' },
   MEETING: { label: 'Meeting', border: 'border-l-teal-500', badge: 'bg-teal-500/10 text-teal-600', text: 'text-teal-600' },
   INTERRUPTION: { label: 'Interruption', border: 'border-l-error', badge: 'bg-error/10 text-error', text: 'text-error' },
   PERSONAL_MISC: { label: 'Personal', border: 'border-l-tertiary-container', badge: 'bg-tertiary-container/10 text-tertiary-container', text: 'text-tertiary-container' },
 };
 
 const CATEGORIES = [
-  { value: 'DEEP_WORK', label: 'Deep Work', color: 'bg-primary-container' },
-  { value: 'SHALLOW_WORK', label: 'Shallow', color: 'bg-secondary-container' },
+  { value: 'HIGH_FOCUS', label: 'High Focus', color: 'bg-primary-container' },
+  { value: 'MEDIUM', label: 'Medium', color: 'bg-indigo-500' },
+  { value: 'LOW_FOCUS', label: 'Low Focus', color: 'bg-secondary-container' },
   { value: 'MEETING', label: 'Meeting', color: 'bg-teal-500' },
   { value: 'INTERRUPTION', label: 'Interruption', color: 'bg-error' },
   { value: 'PERSONAL_MISC', label: 'Personal', color: 'bg-tertiary-container' },

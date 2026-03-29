@@ -1,12 +1,13 @@
 import { db } from '@/lib/db';
 import { dailyLog } from '@/lib/db/schema';
-import { desc, between, sql, gte, lte } from 'drizzle-orm';
+import { desc, between } from 'drizzle-orm';
 import { format, subDays, startOfWeek, endOfWeek, subWeeks } from 'date-fns';
 
 export interface WeeklyBreakdown {
   date: string;
-  deepWork: number;
-  shallowWork: number;
+  highFocus: number;
+  medium: number;
+  lowFocus: number;
   meetings: number;
   interruptions: number;
   personalMisc: number;
@@ -15,24 +16,27 @@ export interface WeeklyBreakdown {
 
 export interface TrendData {
   currentWeek: {
-    avgDeepWork: number;
-    avgShallowWork: number;
+    avgHighFocus: number;
+    avgMedium: number;
+    avgLowFocus: number;
     avgMeetings: number;
     avgInterruptions: number;
     avgPersonalMisc: number;
     totalDays: number;
   };
   previousWeeks: {
-    avgDeepWork: number;
-    avgShallowWork: number;
+    avgHighFocus: number;
+    avgMedium: number;
+    avgLowFocus: number;
     avgMeetings: number;
     avgInterruptions: number;
     avgPersonalMisc: number;
     totalDays: number;
   };
   deltas: {
-    deepWork: number;
-    shallowWork: number;
+    highFocus: number;
+    medium: number;
+    lowFocus: number;
     meetings: number;
     interruptions: number;
     personalMisc: number;
@@ -51,12 +55,13 @@ export async function getWeeklyBreakdown(): Promise<WeeklyBreakdown[]> {
 
   return logs.map((log) => ({
     date: log.logDate,
-    deepWork: log.totalDeepWork ?? 0,
-    shallowWork: log.totalShallowWork ?? 0,
+    highFocus: log.totalHighFocus ?? 0,
+    medium: log.totalMedium ?? 0,
+    lowFocus: log.totalLowFocus ?? 0,
     meetings: log.totalMeetings ?? 0,
     interruptions: log.totalInterruptions ?? 0,
     personalMisc: log.totalPersonalMisc ?? 0,
-    total: (log.totalDeepWork ?? 0) + (log.totalShallowWork ?? 0) + (log.totalMeetings ?? 0) + (log.totalInterruptions ?? 0) + (log.totalPersonalMisc ?? 0),
+    total: (log.totalHighFocus ?? 0) + (log.totalMedium ?? 0) + (log.totalLowFocus ?? 0) + (log.totalMeetings ?? 0) + (log.totalInterruptions ?? 0) + (log.totalPersonalMisc ?? 0),
   }));
 }
 
@@ -84,18 +89,12 @@ export async function getTrends(weeks: number = 4): Promise<TrendData> {
 
   const avg = (logs: typeof currentLogs) => {
     if (logs.length === 0)
-      return {
-        avgDeepWork: 0,
-        avgShallowWork: 0,
-        avgMeetings: 0,
-        avgInterruptions: 0,
-        avgPersonalMisc: 0,
-        totalDays: 0,
-      };
+      return { avgHighFocus: 0, avgMedium: 0, avgLowFocus: 0, avgMeetings: 0, avgInterruptions: 0, avgPersonalMisc: 0, totalDays: 0 };
     const n = logs.length;
     return {
-      avgDeepWork: logs.reduce((s, l) => s + (l.totalDeepWork ?? 0), 0) / n,
-      avgShallowWork: logs.reduce((s, l) => s + (l.totalShallowWork ?? 0), 0) / n,
+      avgHighFocus: logs.reduce((s, l) => s + (l.totalHighFocus ?? 0), 0) / n,
+      avgMedium: logs.reduce((s, l) => s + (l.totalMedium ?? 0), 0) / n,
+      avgLowFocus: logs.reduce((s, l) => s + (l.totalLowFocus ?? 0), 0) / n,
       avgMeetings: logs.reduce((s, l) => s + (l.totalMeetings ?? 0), 0) / n,
       avgInterruptions: logs.reduce((s, l) => s + (l.totalInterruptions ?? 0), 0) / n,
       avgPersonalMisc: logs.reduce((s, l) => s + (l.totalPersonalMisc ?? 0), 0) / n,
@@ -110,8 +109,9 @@ export async function getTrends(weeks: number = 4): Promise<TrendData> {
     currentWeek: current,
     previousWeeks: previous,
     deltas: {
-      deepWork: current.avgDeepWork - previous.avgDeepWork,
-      shallowWork: current.avgShallowWork - previous.avgShallowWork,
+      highFocus: current.avgHighFocus - previous.avgHighFocus,
+      medium: current.avgMedium - previous.avgMedium,
+      lowFocus: current.avgLowFocus - previous.avgLowFocus,
       meetings: current.avgMeetings - previous.avgMeetings,
       interruptions: current.avgInterruptions - previous.avgInterruptions,
       personalMisc: current.avgPersonalMisc - previous.avgPersonalMisc,

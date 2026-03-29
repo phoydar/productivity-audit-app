@@ -1,7 +1,7 @@
 import { pgTable, pgEnum, text, integer, boolean, doublePrecision, primaryKey, uniqueIndex, index } from 'drizzle-orm/pg-core';
 import { sql, relations } from 'drizzle-orm';
 
-export const categoryEnum = pgEnum('category', ['DEEP_WORK', 'SHALLOW_WORK', 'MEETING', 'INTERRUPTION', 'PERSONAL_MISC']);
+export const categoryEnum = pgEnum('category', ['HIGH_FOCUS', 'MEDIUM', 'LOW_FOCUS', 'MEETING', 'INTERRUPTION', 'PERSONAL_MISC']);
 export const insightTypeEnum = pgEnum('insight_type', ['TREND', 'THRESHOLD', 'SUGGESTION']);
 export const insightSeverityEnum = pgEnum('insight_severity', ['INFO', 'WARNING']);
 export const todoStatusEnum = pgEnum('todo_status', ['PENDING', 'COMPLETED', 'CANCELLED']);
@@ -13,8 +13,9 @@ export const dailyLog = pgTable(
     logDate: text('log_date').notNull().unique(),
     summary: text('summary'),
     observations: text('observations'),
-    totalDeepWork: doublePrecision('total_deep_work').default(0).notNull(),
-    totalShallowWork: doublePrecision('total_shallow_work').default(0).notNull(),
+    totalHighFocus: doublePrecision('total_high_focus').default(0).notNull(),
+    totalMedium: doublePrecision('total_medium').default(0).notNull(),
+    totalLowFocus: doublePrecision('total_low_focus').default(0).notNull(),
     totalMeetings: doublePrecision('total_meetings').default(0).notNull(),
     totalInterruptions: doublePrecision('total_interruptions').default(0).notNull(),
     totalPersonalMisc: doublePrecision('total_personal_misc').default(0).notNull(),
