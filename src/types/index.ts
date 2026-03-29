@@ -1,33 +1,46 @@
-export type CategoryType = 'HIGH_FOCUS' | 'MEDIUM' | 'LOW_FOCUS' | 'MEETING' | 'INTERRUPTION' | 'PERSONAL_MISC';
-
 export type InsightType = 'TREND' | 'THRESHOLD' | 'SUGGESTION';
 export type SeverityType = 'INFO' | 'WARNING';
+
+export interface Category {
+  id: string;
+  userId: string | null;
+  name: string;
+  color: string;
+  icon: string | null;
+  isFocusType: boolean;
+  sortOrder: number;
+  createdAt: string;
+}
+
+export interface CategoryBreakdown {
+  categoryId: string;
+  name: string;
+  color: string;
+  isFocusType: boolean;
+  totalHours: number;
+}
 
 export interface DailyLog {
   id: string;
   logDate: string;
   summary: string | null;
   observations: string | null;
-  totalHighFocus: number;
-  totalMedium: number;
-  totalLowFocus: number;
-  totalMeetings: number;
-  totalInterruptions: number;
-  totalPersonalMisc: number;
   isReconstructed: boolean;
   generatedAt: string | null;
   createdAt: string;
   updatedAt: string;
   entries?: LogEntry[];
+  breakdown?: CategoryBreakdown[];
 }
 
 export interface LogEntry {
   id: string;
   dailyLogId: string;
+  categoryId: string;
+  category: Category;
   task: string;
   outcome: string;
   durationMinutes: number;
-  category: CategoryType;
   sortOrder: number;
   isReconstructed: boolean;
   createdAt: string;
@@ -44,20 +57,10 @@ export interface Insight {
   createdAt: string;
 }
 
-export interface TimeBreakdown {
-  highFocus: number;
-  medium: number;
-  lowFocus: number;
-  meetings: number;
-  interruptions: number;
-  personalMisc: number;
-  total: number;
-}
-
 export interface DailySummary {
   summary: string;
   workLog: LogEntry[];
-  timeBreakdown: TimeBreakdown;
+  breakdown: CategoryBreakdown[];
   observations: string;
 }
 
@@ -74,7 +77,8 @@ export type TodoStatus = 'PENDING' | 'COMPLETED' | 'CANCELLED';
 export interface Todo {
   id: string;
   task: string;
-  category: CategoryType;
+  categoryId: string;
+  category?: Category;
   estimatedMinutes: number;
   priority: number;
   tags: string[] | null;

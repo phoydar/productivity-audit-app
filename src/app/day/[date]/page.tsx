@@ -8,31 +8,34 @@ import { EntryCard, type EditPayload } from '@/components/day/entry-card';
 import { TimeBreakdown } from '@/components/day/time-breakdown';
 import { SummaryView } from '@/components/day/summary-view';
 import { QuickAdd } from '@/components/dashboard/quick-add';
+import type { CategoryBreakdown } from '@/types';
+
+interface Category {
+  id: string;
+  name: string;
+  color: string;
+  isFocusType: boolean;
+}
 
 interface Entry {
   id: string;
   task: string;
   outcome: string;
   durationMinutes: number;
-  category: string;
-  isReconstructed: number;
+  category: Category;
+  isReconstructed: boolean;
   sortOrder: number;
 }
 
 interface DayLog {
-  id: string;
+  id: string | null;
   logDate: string;
   summary: string | null;
   observations: string | null;
-  totalHighFocus: number;
-  totalMedium: number;
-  totalLowFocus: number;
-  totalMeetings: number;
-  totalInterruptions: number;
-  totalPersonalMisc: number;
-  isReconstructed: number;
+  isReconstructed: boolean;
   generatedAt: string | null;
   entries: Entry[];
+  breakdown: CategoryBreakdown[];
 }
 
 export default function DayDetailPage({ params }: { params: Promise<{ date: string }> }) {
@@ -103,8 +106,7 @@ export default function DayDetailPage({ params }: { params: Promise<{ date: stri
 
   return (
     <div className="min-h-screen">
-      {/* Reconstructed banner */}
-      {log?.isReconstructed === 1 && (
+      {log?.isReconstructed && (
         <div className="bg-secondary-container/10 border-b border-secondary-container/20 px-8 py-2.5 flex items-center justify-center gap-2 text-sm text-secondary-container">
           <AlertTriangle size={14} />
           This day was reconstructed from memory
@@ -112,7 +114,6 @@ export default function DayDetailPage({ params }: { params: Promise<{ date: stri
       )}
 
       <div className="p-12 max-w-7xl mx-auto">
-        {/* Header with date nav */}
         <div className="flex items-center justify-between mb-10">
           <div className="flex items-center gap-4">
             <button onClick={() => router.push(`/day/${prevDate}`)} className="p-2 rounded-md hover:bg-surface-container-high text-on-surface-variant transition-colors">
@@ -149,13 +150,17 @@ export default function DayDetailPage({ params }: { params: Promise<{ date: stri
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-            {/* Entry List */}
             <div className="lg:col-span-2 space-y-4">
               {log?.entries && log.entries.length > 0 ? (
                 log.entries.map((entry) => (
                   <EntryCard
                     key={entry.id}
-                    {...entry}
+                    id={entry.id}
+                    task={entry.task}
+                    outcome={entry.outcome}
+                    durationMinutes={entry.durationMinutes}
+                    category={entry.category}
+                    isReconstructed={entry.isReconstructed}
                     onEdit={handleEdit}
                     onDelete={handleDelete}
                   />
@@ -168,18 +173,10 @@ export default function DayDetailPage({ params }: { params: Promise<{ date: stri
               )}
             </div>
 
-            {/* Right Sidebar: Breakdown + Summary */}
             <div className="space-y-8 lg:sticky lg:top-24">
               <div className="bg-surface-container-lowest rounded-lg p-6">
                 <h4 className="text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-4">Time Allocation</h4>
-                <TimeBreakdown
-                  highFocus={log?.totalHighFocus ?? 0}
-                  medium={log?.totalMedium ?? 0}
-                  lowFocus={log?.totalLowFocus ?? 0}
-                  meetings={log?.totalMeetings ?? 0}
-                  interruptions={log?.totalInterruptions ?? 0}
-                  personalMisc={log?.totalPersonalMisc ?? 0}
-                />
+                <TimeBreakdown breakdown={log?.breakdown ?? []} />
               </div>
 
               <div className="bg-surface-container-lowest rounded-lg p-6">
