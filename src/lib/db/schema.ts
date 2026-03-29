@@ -168,3 +168,5 @@ export const todoRelations = relations(todo, ({ one }) => ({
     references: [logEntry.id],
   }),
 }));
+
+export const settingsRelations = relations(settings, () => ({}));
