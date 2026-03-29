@@ -38,3 +38,6 @@ next-env.d.ts
 /data/*.db
 /data/*.db-journal
 /data/*.db-wal
+
+# ignoring claude worktrees
+.claude/

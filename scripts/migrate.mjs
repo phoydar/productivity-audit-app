@@ -3,9 +3,9 @@
  * Runs before the Next.js server starts in production.
  * No dependency on drizzle-kit in the production image.
  */
-import { createClient } from '@libsql/client';
+import pg from 'pg';
 
-const db = createClient({ url: process.env.DATABASE_URL || 'file:/app/data/productivity-audit.db' });
+const client = new pg.Client({ connectionString: process.env.DATABASE_URL });
 
 const tables = [
   `CREATE TABLE IF NOT EXISTS daily_log (
@@ -13,15 +13,15 @@ const tables = [
     log_date TEXT NOT NULL UNIQUE,
     summary TEXT,
     observations TEXT,
-    total_deep_work REAL NOT NULL DEFAULT 0,
-    total_shallow_work REAL NOT NULL DEFAULT 0,
-    total_interruptions REAL NOT NULL DEFAULT 0,
-    total_meetings REAL NOT NULL DEFAULT 0,
-    total_personal_misc REAL NOT NULL DEFAULT 0,
-    is_reconstructed INTEGER NOT NULL DEFAULT 0,
+    total_deep_work DOUBLE PRECISION NOT NULL DEFAULT 0,
+    total_shallow_work DOUBLE PRECISION NOT NULL DEFAULT 0,
+    total_interruptions DOUBLE PRECISION NOT NULL DEFAULT 0,
+    total_meetings DOUBLE PRECISION NOT NULL DEFAULT 0,
+    total_personal_misc DOUBLE PRECISION NOT NULL DEFAULT 0,
+    is_reconstructed BOOLEAN NOT NULL DEFAULT FALSE,
     generated_at TEXT,
-    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at TEXT NOT NULL DEFAULT now()::TEXT,
+    updated_at TEXT NOT NULL DEFAULT now()::TEXT
   )`,
   `CREATE TABLE IF NOT EXISTS log_entry (
     id TEXT PRIMARY KEY,
@@ -31,15 +31,15 @@ const tables = [
     duration_minutes INTEGER NOT NULL,
     category TEXT NOT NULL CHECK(category IN ('DEEP_WORK','SHALLOW_WORK','MEETING','INTERRUPTION','PERSONAL_MISC')),
     sort_order INTEGER NOT NULL DEFAULT 0,
-    is_reconstructed INTEGER NOT NULL DEFAULT 0,
-    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    is_reconstructed BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TEXT NOT NULL DEFAULT now()::TEXT,
+    updated_at TEXT NOT NULL DEFAULT now()::TEXT
   )`,
   `CREATE TABLE IF NOT EXISTS tag (
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL UNIQUE,
     color TEXT,
-    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at TEXT NOT NULL DEFAULT now()::TEXT
   )`,
   `CREATE TABLE IF NOT EXISTS entry_tag (
     entry_id TEXT NOT NULL,
@@ -53,7 +53,7 @@ const tables = [
     message TEXT NOT NULL,
     severity TEXT NOT NULL CHECK(severity IN ('INFO','WARNING')),
     metadata TEXT,
-    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at TEXT NOT NULL DEFAULT now()::TEXT
   )`,
   `CREATE TABLE IF NOT EXISTS todo (
     id TEXT PRIMARY KEY,
@@ -65,8 +65,8 @@ const tables = [
     status TEXT NOT NULL DEFAULT 'PENDING' CHECK(status IN ('PENDING','COMPLETED','CANCELLED')),
     completed_at TEXT,
     log_entry_id TEXT,
-    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at TEXT NOT NULL DEFAULT now()::TEXT,
+    updated_at TEXT NOT NULL DEFAULT now()::TEXT
   )`,
   `CREATE TABLE IF NOT EXISTS settings (
     key TEXT PRIMARY KEY,
@@ -87,20 +87,19 @@ const indexes = [
 
 // Idempotent column additions for existing databases
 const alterations = [
-  `ALTER TABLE daily_log ADD COLUMN total_meetings REAL NOT NULL DEFAULT 0`,
+  `ALTER TABLE daily_log ADD COLUMN IF NOT EXISTS total_meetings DOUBLE PRECISION NOT NULL DEFAULT 0`,
 ];
 
 async function migrate() {
   console.log('[migrate] Running startup migration...');
+  await client.connect();
   for (const sql of [...tables, ...indexes]) {
-    await db.execute(sql);
+    await client.query(sql);
   }
-  // Run ALTER statements, ignoring "duplicate column" errors
   for (const sql of alterations) {
-    try { await db.execute(sql); } catch (e) {
-      if (!String(e).includes('duplicate column')) throw e;
-    }
+    await client.query(sql);
   }
+  await client.end();
   console.log('[migrate] All tables and indexes ready.');
 }
 
