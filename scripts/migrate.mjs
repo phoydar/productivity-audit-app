@@ -1,12 +1,15 @@
 /**
  * Startup migration — creates tables, seeds system categories, and handles schema evolution.
  * Runs before the Next.js server starts in production.
+ *
+ * IMPORTANT ORDER: the PG enum type 'category' must be fully removed from all
+ * columns BEFORE we create the new 'category' table, otherwise Postgres refuses
+ * to drop the type citing a name-conflict dependency on the table.
  */
 import pg from 'pg';
 
 const client = new pg.Client({ connectionString: process.env.DATABASE_URL });
 
-// System category definitions with stable IDs
 const SYSTEM_CATEGORIES = [
   { id: 'sys_high_focus',    name: 'High Focus',      color: '#2563eb', isFocusType: true,  sortOrder: 0 },
   { id: 'sys_medium',        name: 'Medium',           color: '#6366f1', isFocusType: false, sortOrder: 1 },
@@ -21,7 +24,70 @@ async function migrate() {
   await client.connect();
   console.log('[migrate] Running schema migrations...');
 
-  // ── 1. Create category table first (referenced by log_entry and todo) ──────
+  // ── PHASE 1: Strip the old 'category' enum from existing tables ─────────────
+  // Must happen BEFORE we create the new 'category' TABLE or drop the TYPE.
+
+  // log_entry: add category_id (text), migrate data from enum column, drop enum column
+  await client.query(`
+    DO $$ BEGIN
+      IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name='log_entry') THEN
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns
+                       WHERE table_name='log_entry' AND column_name='category_id') THEN
+          ALTER TABLE log_entry ADD COLUMN category_id TEXT NOT NULL DEFAULT 'sys_high_focus';
+        END IF;
+        IF EXISTS (SELECT 1 FROM information_schema.columns
+                   WHERE table_name='log_entry' AND column_name='category') THEN
+          UPDATE log_entry SET category_id = CASE category::text
+            WHEN 'HIGH_FOCUS'    THEN 'sys_high_focus'
+            WHEN 'MEDIUM'        THEN 'sys_medium'
+            WHEN 'LOW_FOCUS'     THEN 'sys_low_focus'
+            WHEN 'MEETING'       THEN 'sys_meeting'
+            WHEN 'INTERRUPTION'  THEN 'sys_interruption'
+            WHEN 'PERSONAL_MISC' THEN 'sys_personal_misc'
+            ELSE 'sys_high_focus'
+          END;
+          ALTER TABLE log_entry DROP COLUMN category;
+        END IF;
+      END IF;
+    END $$
+  `);
+
+  // todo: same migration
+  await client.query(`
+    DO $$ BEGIN
+      IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name='todo') THEN
+        IF NOT EXISTS (SELECT 1 FROM information_schema.columns
+                       WHERE table_name='todo' AND column_name='category_id') THEN
+          ALTER TABLE todo ADD COLUMN category_id TEXT NOT NULL DEFAULT 'sys_high_focus';
+        END IF;
+        IF EXISTS (SELECT 1 FROM information_schema.columns
+                   WHERE table_name='todo' AND column_name='category') THEN
+          UPDATE todo SET category_id = CASE category::text
+            WHEN 'HIGH_FOCUS'    THEN 'sys_high_focus'
+            WHEN 'MEDIUM'        THEN 'sys_medium'
+            WHEN 'LOW_FOCUS'     THEN 'sys_low_focus'
+            WHEN 'MEETING'       THEN 'sys_meeting'
+            WHEN 'INTERRUPTION'  THEN 'sys_interruption'
+            WHEN 'PERSONAL_MISC' THEN 'sys_personal_misc'
+            ELSE 'sys_high_focus'
+          END;
+          ALTER TABLE todo DROP COLUMN category;
+        END IF;
+      END IF;
+    END $$
+  `);
+
+  // ── PHASE 2: Drop the old PG enum types ────────────────────────────────────
+  // Now safe — no columns reference them anymore.
+  await client.query(`
+    DO $$ BEGIN
+      IF EXISTS (SELECT 1 FROM pg_type WHERE typname = 'category') THEN
+        DROP TYPE category;
+      END IF;
+    END $$
+  `);
+
+  // ── PHASE 3: Create new 'category' TABLE (safe now that TYPE is gone) ──────
   await client.query(`
     CREATE TABLE IF NOT EXISTS category (
       id TEXT PRIMARY KEY,
@@ -37,7 +103,7 @@ async function migrate() {
   await client.query(`CREATE INDEX IF NOT EXISTS idx_category_user ON category(user_id)`);
   await client.query(`CREATE INDEX IF NOT EXISTS idx_category_sort ON category(sort_order)`);
 
-  // ── 2. Seed system categories ────────────────────────────────────────────────
+  // ── PHASE 4: Seed system categories ────────────────────────────────────────
   for (const cat of SYSTEM_CATEGORIES) {
     await client.query(
       `INSERT INTO category (id, name, color, is_focus_type, sort_order)
@@ -48,7 +114,7 @@ async function migrate() {
     );
   }
 
-  // ── 3. Create daily_log (no total_* columns) ────────────────────────────────
+  // ── PHASE 5: daily_log — remove legacy total_* columns ────────────────────
   await client.query(`
     CREATE TABLE IF NOT EXISTS daily_log (
       id TEXT PRIMARY KEY,
@@ -63,7 +129,6 @@ async function migrate() {
   `);
   await client.query(`CREATE UNIQUE INDEX IF NOT EXISTS idx_daily_log_date ON daily_log(log_date)`);
 
-  // ── 4. Drop legacy total_* columns from daily_log if they exist ───────────
   await client.query(`
     DO $$ DECLARE col TEXT;
     BEGIN
@@ -80,7 +145,7 @@ async function migrate() {
     END $$
   `);
 
-  // ── 5. Create log_entry with category_id ────────────────────────────────────
+  // ── PHASE 6: log_entry — create if fresh, indexes always ───────────────────
   await client.query(`
     CREATE TABLE IF NOT EXISTS log_entry (
       id TEXT PRIMARY KEY,
@@ -96,36 +161,9 @@ async function migrate() {
     )
   `);
   await client.query(`CREATE INDEX IF NOT EXISTS idx_entry_daily_log ON log_entry(daily_log_id)`);
-
-  // ── 6. Migrate log_entry.category (enum) → category_id (FK) if needed ─────
-  await client.query(`
-    DO $$ BEGIN
-      -- Add category_id column if missing
-      IF NOT EXISTS (SELECT 1 FROM information_schema.columns
-                     WHERE table_name='log_entry' AND column_name='category_id') THEN
-        ALTER TABLE log_entry ADD COLUMN category_id TEXT NOT NULL DEFAULT 'sys_high_focus';
-      END IF;
-
-      -- Migrate enum values to system IDs if old category column exists
-      IF EXISTS (SELECT 1 FROM information_schema.columns
-                 WHERE table_name='log_entry' AND column_name='category') THEN
-        UPDATE log_entry SET category_id = CASE category::text
-          WHEN 'HIGH_FOCUS'    THEN 'sys_high_focus'
-          WHEN 'MEDIUM'        THEN 'sys_medium'
-          WHEN 'LOW_FOCUS'     THEN 'sys_low_focus'
-          WHEN 'MEETING'       THEN 'sys_meeting'
-          WHEN 'INTERRUPTION'  THEN 'sys_interruption'
-          WHEN 'PERSONAL_MISC' THEN 'sys_personal_misc'
-          ELSE 'sys_high_focus'
-        END WHERE category_id = 'sys_high_focus' OR category_id IS NULL;
-        ALTER TABLE log_entry DROP COLUMN category;
-      END IF;
-    END $$
-  `);
-  // Create index after column is guaranteed to exist
   await client.query(`CREATE INDEX IF NOT EXISTS idx_entry_category ON log_entry(category_id)`);
 
-  // ── 7. Create todo with category_id ─────────────────────────────────────────
+  // ── PHASE 7: todo — create if fresh ────────────────────────────────────────
   await client.query(`
     CREATE TABLE IF NOT EXISTS todo (
       id TEXT PRIMARY KEY,
@@ -144,40 +182,7 @@ async function migrate() {
   await client.query(`CREATE INDEX IF NOT EXISTS idx_todo_status ON todo(status)`);
   await client.query(`CREATE INDEX IF NOT EXISTS idx_todo_created ON todo(created_at)`);
 
-  // ── 8. Migrate todo.category → category_id if needed ────────────────────────
-  await client.query(`
-    DO $$ BEGIN
-      IF NOT EXISTS (SELECT 1 FROM information_schema.columns
-                     WHERE table_name='todo' AND column_name='category_id') THEN
-        ALTER TABLE todo ADD COLUMN category_id TEXT NOT NULL DEFAULT 'sys_high_focus';
-      END IF;
-
-      IF EXISTS (SELECT 1 FROM information_schema.columns
-                 WHERE table_name='todo' AND column_name='category') THEN
-        UPDATE todo SET category_id = CASE category::text
-          WHEN 'HIGH_FOCUS'    THEN 'sys_high_focus'
-          WHEN 'MEDIUM'        THEN 'sys_medium'
-          WHEN 'LOW_FOCUS'     THEN 'sys_low_focus'
-          WHEN 'MEETING'       THEN 'sys_meeting'
-          WHEN 'INTERRUPTION'  THEN 'sys_interruption'
-          WHEN 'PERSONAL_MISC' THEN 'sys_personal_misc'
-          ELSE 'sys_high_focus'
-        END WHERE category_id = 'sys_high_focus' OR category_id IS NULL;
-        ALTER TABLE todo DROP COLUMN category;
-      END IF;
-    END $$
-  `);
-
-  // ── 9. Drop PG enum types if they still exist ──────────────────────────────
-  await client.query(`
-    DO $$ BEGIN
-      IF EXISTS (SELECT 1 FROM pg_type WHERE typname = 'category') THEN
-        DROP TYPE category CASCADE;
-      END IF;
-    END $$
-  `);
-
-  // ── 10. Remaining tables ─────────────────────────────────────────────────────
+  // ── PHASE 8: Remaining tables ───────────────────────────────────────────────
   await client.query(`
     CREATE TABLE IF NOT EXISTS tag (
       id TEXT PRIMARY KEY,
