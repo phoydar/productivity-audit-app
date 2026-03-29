@@ -96,7 +96,6 @@ async function migrate() {
     )
   `);
   await client.query(`CREATE INDEX IF NOT EXISTS idx_entry_daily_log ON log_entry(daily_log_id)`);
-  await client.query(`CREATE INDEX IF NOT EXISTS idx_entry_category ON log_entry(category_id)`);
 
   // ── 6. Migrate log_entry.category (enum) → category_id (FK) if needed ─────
   await client.query(`
@@ -123,6 +122,8 @@ async function migrate() {
       END IF;
     END $$
   `);
+  // Create index after column is guaranteed to exist
+  await client.query(`CREATE INDEX IF NOT EXISTS idx_entry_category ON log_entry(category_id)`);
 
   // ── 7. Create todo with category_id ─────────────────────────────────────────
   await client.query(`
