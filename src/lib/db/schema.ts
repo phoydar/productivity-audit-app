@@ -1,33 +1,38 @@
-import { sqliteTable, text, integer, real, primaryKey, uniqueIndex, index } from 'drizzle-orm/sqlite-core';
+import { pgTable, pgEnum, text, integer, boolean, doublePrecision, primaryKey, uniqueIndex, index } from 'drizzle-orm/pg-core';
 import { sql, relations } from 'drizzle-orm';
 
-export const dailyLog = sqliteTable(
+export const categoryEnum = pgEnum('category', ['DEEP_WORK', 'SHALLOW_WORK', 'MEETING', 'INTERRUPTION', 'PERSONAL_MISC']);
+export const insightTypeEnum = pgEnum('insight_type', ['TREND', 'THRESHOLD', 'SUGGESTION']);
+export const insightSeverityEnum = pgEnum('insight_severity', ['INFO', 'WARNING']);
+export const todoStatusEnum = pgEnum('todo_status', ['PENDING', 'COMPLETED', 'CANCELLED']);
+
+export const dailyLog = pgTable(
   'daily_log',
   {
     id: text('id').primaryKey(),
     logDate: text('log_date').notNull().unique(),
     summary: text('summary'),
     observations: text('observations'),
-    totalDeepWork: real('total_deep_work').default(0).notNull(),
-    totalShallowWork: real('total_shallow_work').default(0).notNull(),
-    totalMeetings: real('total_meetings').default(0).notNull(),
-    totalInterruptions: real('total_interruptions').default(0).notNull(),
-    totalPersonalMisc: real('total_personal_misc').default(0).notNull(),
-    isReconstructed: integer('is_reconstructed', { mode: 'boolean' }).default(false).notNull(),
+    totalDeepWork: doublePrecision('total_deep_work').default(0).notNull(),
+    totalShallowWork: doublePrecision('total_shallow_work').default(0).notNull(),
+    totalMeetings: doublePrecision('total_meetings').default(0).notNull(),
+    totalInterruptions: doublePrecision('total_interruptions').default(0).notNull(),
+    totalPersonalMisc: doublePrecision('total_personal_misc').default(0).notNull(),
+    isReconstructed: boolean('is_reconstructed').default(false).notNull(),
     generatedAt: text('generated_at'),
     createdAt: text('created_at')
       .notNull()
-      .default(sql`CURRENT_TIMESTAMP`),
+      .default(sql`now()`),
     updatedAt: text('updated_at')
       .notNull()
-      .default(sql`CURRENT_TIMESTAMP`),
+      .default(sql`now()`),
   },
   (table) => [
     uniqueIndex('idx_daily_log_date').on(table.logDate),
   ],
 );
 
-export const logEntry = sqliteTable(
+export const logEntry = pgTable(
   'log_entry',
   {
     id: text('id').primaryKey(),
@@ -35,15 +40,15 @@ export const logEntry = sqliteTable(
     task: text('task').notNull(),
     outcome: text('outcome').notNull(),
     durationMinutes: integer('duration_minutes').notNull(),
-    category: text('category', { enum: ['DEEP_WORK', 'SHALLOW_WORK', 'MEETING', 'INTERRUPTION', 'PERSONAL_MISC'] }).notNull(),
+    category: categoryEnum('category').notNull(),
     sortOrder: integer('sort_order').default(0).notNull(),
-    isReconstructed: integer('is_reconstructed', { mode: 'boolean' }).default(false).notNull(),
+    isReconstructed: boolean('is_reconstructed').default(false).notNull(),
     createdAt: text('created_at')
       .notNull()
-      .default(sql`CURRENT_TIMESTAMP`),
+      .default(sql`now()`),
     updatedAt: text('updated_at')
       .notNull()
-      .default(sql`CURRENT_TIMESTAMP`),
+      .default(sql`now()`),
   },
   (table) => [
     index('idx_entry_daily_log').on(table.dailyLogId),
@@ -51,16 +56,16 @@ export const logEntry = sqliteTable(
   ],
 );
 
-export const tag = sqliteTable('tag', {
+export const tag = pgTable('tag', {
   id: text('id').primaryKey(),
   name: text('name').notNull().unique(),
   color: text('color'),
   createdAt: text('created_at')
     .notNull()
-    .default(sql`CURRENT_TIMESTAMP`),
+    .default(sql`now()`),
 });
 
-export const entryTag = sqliteTable(
+export const entryTag = pgTable(
   'entry_tag',
   {
     entryId: text('entry_id').notNull(),
@@ -73,42 +78,42 @@ export const entryTag = sqliteTable(
   ],
 );
 
-export const insight = sqliteTable(
+export const insight = pgTable(
   'insight',
   {
     id: text('id').primaryKey(),
     insightDate: text('insight_date').notNull(),
-    type: text('type', { enum: ['TREND', 'THRESHOLD', 'SUGGESTION'] }).notNull(),
+    type: insightTypeEnum('type').notNull(),
     message: text('message').notNull(),
-    severity: text('severity', { enum: ['INFO', 'WARNING'] }).notNull(),
-    metadata: text('metadata'), // JSON string
+    severity: insightSeverityEnum('severity').notNull(),
+    metadata: text('metadata'),
     createdAt: text('created_at')
       .notNull()
-      .default(sql`CURRENT_TIMESTAMP`),
+      .default(sql`now()`),
   },
   (table) => [
     index('idx_insight_date').on(table.insightDate),
   ],
 );
 
-export const todo = sqliteTable(
+export const todo = pgTable(
   'todo',
   {
     id: text('id').primaryKey(),
     task: text('task').notNull(),
-    category: text('category', { enum: ['DEEP_WORK', 'SHALLOW_WORK', 'MEETING', 'INTERRUPTION', 'PERSONAL_MISC'] }).notNull(),
+    category: categoryEnum('category').notNull(),
     estimatedMinutes: integer('estimated_minutes').notNull(),
-    priority: integer('priority').default(0).notNull(), // 0=normal, 1=high
-    tags: text('tags'), // JSON array string
-    status: text('status', { enum: ['PENDING', 'COMPLETED', 'CANCELLED'] }).default('PENDING').notNull(),
+    priority: integer('priority').default(0).notNull(),
+    tags: text('tags'),
+    status: todoStatusEnum('status').default('PENDING').notNull(),
     completedAt: text('completed_at'),
-    logEntryId: text('log_entry_id'), // links to created entry on completion
+    logEntryId: text('log_entry_id'),
     createdAt: text('created_at')
       .notNull()
-      .default(sql`CURRENT_TIMESTAMP`),
+      .default(sql`now()`),
     updatedAt: text('updated_at')
       .notNull()
-      .default(sql`CURRENT_TIMESTAMP`),
+      .default(sql`now()`),
   },
   (table) => [
     index('idx_todo_status').on(table.status),
@@ -116,7 +121,7 @@ export const todo = sqliteTable(
   ],
 );
 
-export const settings = sqliteTable('settings', {
+export const settings = pgTable('settings', {
   key: text('key').primaryKey(),
   value: text('value').notNull(),
 });
