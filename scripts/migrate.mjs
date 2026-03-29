@@ -84,7 +84,8 @@ async function migrate() {
   // we can drop the type cleanly, then recreate the table in Phase 3.
   await client.query(`
     DO $$ BEGIN
-      IF EXISTS (SELECT 1 FROM pg_type WHERE typname = 'category') THEN
+      -- typtype = 'e' means enum — avoids matching the table's own row type
+      IF EXISTS (SELECT 1 FROM pg_type WHERE typname = 'category' AND typtype = 'e') THEN
         -- Drop the category table if it was created by a previous partial run
         DROP TABLE IF EXISTS category;
         DROP TYPE category;
