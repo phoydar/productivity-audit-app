@@ -1,10 +1,29 @@
-import { pgTable, pgEnum, text, integer, boolean, doublePrecision, primaryKey, uniqueIndex, index } from 'drizzle-orm/pg-core';
+import { pgTable, pgEnum, text, integer, boolean, primaryKey, uniqueIndex, index } from 'drizzle-orm/pg-core';
 import { sql, relations } from 'drizzle-orm';
 
-export const categoryEnum = pgEnum('category', ['DEEP_WORK', 'SHALLOW_WORK', 'MEETING', 'INTERRUPTION', 'PERSONAL_MISC']);
 export const insightTypeEnum = pgEnum('insight_type', ['TREND', 'THRESHOLD', 'SUGGESTION']);
 export const insightSeverityEnum = pgEnum('insight_severity', ['INFO', 'WARNING']);
 export const todoStatusEnum = pgEnum('todo_status', ['PENDING', 'COMPLETED', 'CANCELLED']);
+
+export const category = pgTable(
+  'category',
+  {
+    id: text('id').primaryKey(),
+    userId: text('user_id'), // null = system default; populated when users exist
+    name: text('name').notNull(),
+    color: text('color').notNull().default('#6366f1'),
+    icon: text('icon'),
+    isFocusType: boolean('is_focus_type').notNull().default(false),
+    sortOrder: integer('sort_order').notNull().default(0),
+    createdAt: text('created_at')
+      .notNull()
+      .default(sql`now()`),
+  },
+  (table) => [
+    index('idx_category_user').on(table.userId),
+    index('idx_category_sort').on(table.sortOrder),
+  ],
+);
 
 export const dailyLog = pgTable(
   'daily_log',
@@ -13,11 +32,6 @@ export const dailyLog = pgTable(
     logDate: text('log_date').notNull().unique(),
     summary: text('summary'),
     observations: text('observations'),
-    totalDeepWork: doublePrecision('total_deep_work').default(0).notNull(),
-    totalShallowWork: doublePrecision('total_shallow_work').default(0).notNull(),
-    totalMeetings: doublePrecision('total_meetings').default(0).notNull(),
-    totalInterruptions: doublePrecision('total_interruptions').default(0).notNull(),
-    totalPersonalMisc: doublePrecision('total_personal_misc').default(0).notNull(),
     isReconstructed: boolean('is_reconstructed').default(false).notNull(),
     generatedAt: text('generated_at'),
     createdAt: text('created_at')
@@ -37,10 +51,10 @@ export const logEntry = pgTable(
   {
     id: text('id').primaryKey(),
     dailyLogId: text('daily_log_id').notNull(),
+    categoryId: text('category_id').notNull(),
     task: text('task').notNull(),
     outcome: text('outcome').notNull(),
     durationMinutes: integer('duration_minutes').notNull(),
-    category: categoryEnum('category').notNull(),
     sortOrder: integer('sort_order').default(0).notNull(),
     isReconstructed: boolean('is_reconstructed').default(false).notNull(),
     createdAt: text('created_at')
@@ -52,7 +66,7 @@ export const logEntry = pgTable(
   },
   (table) => [
     index('idx_entry_daily_log').on(table.dailyLogId),
-    index('idx_entry_category').on(table.category),
+    index('idx_entry_category').on(table.categoryId),
   ],
 );
 
@@ -101,7 +115,7 @@ export const todo = pgTable(
   {
     id: text('id').primaryKey(),
     task: text('task').notNull(),
-    category: categoryEnum('category').notNull(),
+    categoryId: text('category_id').notNull(),
     estimatedMinutes: integer('estimated_minutes').notNull(),
     priority: integer('priority').default(0).notNull(),
     tags: text('tags'),
@@ -127,6 +141,11 @@ export const settings = pgTable('settings', {
 });
 
 // Relations
+export const categoryRelations = relations(category, ({ many }) => ({
+  entries: many(logEntry),
+  todos: many(todo),
+}));
+
 export const dailyLogRelations = relations(dailyLog, ({ many }) => ({
   entries: many(logEntry),
   insights: many(insight),
@@ -136,6 +155,10 @@ export const logEntryRelations = relations(logEntry, ({ one, many }) => ({
   dailyLog: one(dailyLog, {
     fields: [logEntry.dailyLogId],
     references: [dailyLog.id],
+  }),
+  category: one(category, {
+    fields: [logEntry.categoryId],
+    references: [category.id],
   }),
   tags: many(entryTag),
 }));
@@ -163,6 +186,10 @@ export const insightRelations = relations(insight, ({ one }) => ({
 }));
 
 export const todoRelations = relations(todo, ({ one }) => ({
+  category: one(category, {
+    fields: [todo.categoryId],
+    references: [category.id],
+  }),
   logEntry: one(logEntry, {
     fields: [todo.logEntryId],
     references: [logEntry.id],

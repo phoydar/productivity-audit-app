@@ -2,22 +2,17 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { Check, Plus, X, CircleDot, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
-
-const CATEGORIES = [
-  { value: 'DEEP_WORK', label: 'Deep', color: 'bg-primary-container' },
-  { value: 'SHALLOW_WORK', label: 'Shallow', color: 'bg-secondary-container' },
-  { value: 'MEETING', label: 'Meeting', color: 'bg-teal-500' },
-  { value: 'INTERRUPTION', label: 'Interruption', color: 'bg-error' },
-  { value: 'PERSONAL_MISC', label: 'Personal', color: 'bg-tertiary-container' },
-];
+import { useCategories } from '@/hooks/use-categories';
 
 const DURATION_OPTIONS = ['15m', '30m', '45m', '1h', '1.5h', '2h', '3h', '4h+'];
+
 function parseDuration(label: string): number {
   const map: Record<string, number> = {
     '15m': 15, '30m': 30, '45m': 45, '1h': 60, '1.5h': 90, '2h': 120, '3h': 180, '4h+': 240,
   };
   return map[label] ?? 60;
 }
+
 function formatMinutes(m: number): string {
   if (m < 60) return `${m}m`;
   const h = Math.floor(m / 60);
@@ -25,10 +20,17 @@ function formatMinutes(m: number): string {
   return rem > 0 ? `${h}h ${rem}m` : `${h}h`;
 }
 
+interface CategoryInfo {
+  id: string;
+  name: string;
+  color: string;
+}
+
 interface TodoItem {
   id: string;
   task: string;
-  category: string;
+  categoryId: string;
+  category: CategoryInfo;
   estimatedMinutes: number;
   priority: number;
   tags: string | null;
@@ -45,6 +47,9 @@ interface CompletingState {
 }
 
 export function TodoPanel({ onTodoCompleted }: { onTodoCompleted?: () => void }) {
+  const { categories } = useCategories();
+  const defaultCategoryId = categories[0]?.id ?? 'sys_high_focus';
+
   const [todos, setTodos] = useState<TodoItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
@@ -52,9 +57,8 @@ export function TodoPanel({ onTodoCompleted }: { onTodoCompleted?: () => void })
   const [completing, setCompleting] = useState<CompletingState | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Add form state
   const [newTask, setNewTask] = useState('');
-  const [newCategory, setNewCategory] = useState('DEEP_WORK');
+  const [newCategoryId, setNewCategoryId] = useState(defaultCategoryId);
   const [newDuration, setNewDuration] = useState('1h');
   const [newPriority, setNewPriority] = useState(0);
   const [addLoading, setAddLoading] = useState(false);
@@ -70,6 +74,13 @@ export function TodoPanel({ onTodoCompleted }: { onTodoCompleted?: () => void })
       outcomeRef.current.focus();
     }
   }, [completing]);
+
+  // Sync default category once loaded
+  useEffect(() => {
+    if (categories.length > 0 && newCategoryId === 'sys_high_focus') {
+      setNewCategoryId(categories[0].id);
+    }
+  }, [categories]);
 
   async function fetchTodos() {
     try {
@@ -95,14 +106,14 @@ export function TodoPanel({ onTodoCompleted }: { onTodoCompleted?: () => void })
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           task: newTask,
-          category: newCategory,
+          categoryId: newCategoryId,
           estimatedMinutes: parseDuration(newDuration),
           priority: newPriority,
         }),
       });
       if (res.ok) {
         setNewTask('');
-        setNewCategory('DEEP_WORK');
+        setNewCategoryId(categories[0]?.id ?? 'sys_high_focus');
         setNewDuration('1h');
         setNewPriority(0);
         setShowAdd(false);
@@ -155,17 +166,13 @@ export function TodoPanel({ onTodoCompleted }: { onTodoCompleted?: () => void })
 
   const pending = todos.filter((t) => t.status === 'PENDING');
   const completed = todos.filter((t) => t.status === 'COMPLETED');
-  const catInfo = (val: string) => CATEGORIES.find((c) => c.value === val) ?? CATEGORIES[0];
 
   if (loading) {
-    return (
-      <div className="bg-surface-container-lowest rounded-lg p-6 animate-pulse h-48" />
-    );
+    return <div className="bg-surface-container-lowest rounded-lg p-6 animate-pulse h-48" />;
   }
 
   return (
     <div className="bg-surface-container-lowest rounded-lg p-6">
-      {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <div>
           <h3 className="text-sm font-bold text-on-surface uppercase tracking-tighter">To-Do</h3>
@@ -182,7 +189,6 @@ export function TodoPanel({ onTodoCompleted }: { onTodoCompleted?: () => void })
         </button>
       </div>
 
-      {/* Add form */}
       {showAdd && (
         <div className="mb-6 p-4 bg-surface-container-low rounded-lg space-y-3">
           <input
@@ -196,18 +202,18 @@ export function TodoPanel({ onTodoCompleted }: { onTodoCompleted?: () => void })
           />
 
           <div className="flex flex-wrap gap-2">
-            {CATEGORIES.map((cat) => (
+            {categories.map((cat) => (
               <button
-                key={cat.value}
-                onClick={() => setNewCategory(cat.value)}
+                key={cat.id}
+                onClick={() => setNewCategoryId(cat.id)}
                 className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
-                  newCategory === cat.value
+                  newCategoryId === cat.id
                     ? 'bg-on-surface text-surface'
                     : 'bg-surface-container text-on-surface-variant hover:bg-surface-container-high'
                 }`}
               >
-                <span className={`w-1.5 h-1.5 rounded-full ${cat.color}`} />
-                {cat.label}
+                <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: cat.color }} />
+                {cat.name}
               </button>
             ))}
           </div>
@@ -262,20 +268,18 @@ export function TodoPanel({ onTodoCompleted }: { onTodoCompleted?: () => void })
 
       {error && <p className="text-xs text-error mb-4">{error}</p>}
 
-      {/* Pending todos */}
       {pending.length === 0 && !showAdd && (
         <p className="text-sm text-on-surface-variant py-4 text-center">No tasks queued up. Nice.</p>
       )}
 
       <div className="space-y-2">
         {pending.map((item) => {
-          const cat = catInfo(item.category);
+          const cat = item.category;
           const isCompleting = completing?.todoId === item.id;
 
           return (
             <div key={item.id} className="group">
               <div className="flex items-start gap-3 py-2.5 px-3 rounded-lg hover:bg-surface-container-low/50 transition-colors">
-                {/* Complete button */}
                 <button
                   onClick={() =>
                     isCompleting
@@ -289,14 +293,14 @@ export function TodoPanel({ onTodoCompleted }: { onTodoCompleted?: () => void })
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${cat.color}`} />
+                    <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: cat.color }} />
                     <p className="text-sm text-on-surface truncate">{item.task}</p>
                     {item.priority === 1 && (
                       <span className="text-[10px] font-bold uppercase tracking-wider text-error flex-shrink-0">!</span>
                     )}
                   </div>
                   <p className="text-xs text-on-surface-variant mt-0.5 ml-3.5">
-                    {cat.label} · {formatMinutes(item.estimatedMinutes)}
+                    {cat.name} · {formatMinutes(item.estimatedMinutes)}
                   </p>
                 </div>
 
@@ -308,7 +312,6 @@ export function TodoPanel({ onTodoCompleted }: { onTodoCompleted?: () => void })
                 </button>
               </div>
 
-              {/* Completion form inline */}
               {isCompleting && (
                 <div className="ml-8 mt-1 mb-2 p-3 bg-surface-container-low rounded-lg space-y-2">
                   <input
@@ -353,7 +356,6 @@ export function TodoPanel({ onTodoCompleted }: { onTodoCompleted?: () => void })
         })}
       </div>
 
-      {/* Completed section (collapsible) */}
       {completed.length > 0 && (
         <div className="mt-4 pt-4">
           <button
@@ -366,14 +368,14 @@ export function TodoPanel({ onTodoCompleted }: { onTodoCompleted?: () => void })
           {showCompleted && (
             <div className="mt-2 space-y-1">
               {completed.map((item) => {
-                const cat = catInfo(item.category);
+                const cat = item.category;
                 return (
                   <div key={item.id} className="flex items-center gap-3 py-1.5 px-3">
                     <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
                       <Check size={12} className="text-primary" />
                     </div>
                     <div className="flex items-center gap-2 min-w-0">
-                      <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${cat.color}`} />
+                      <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: cat.color }} />
                       <p className="text-sm text-on-surface-variant line-through truncate">{item.task}</p>
                     </div>
                   </div>

@@ -1,15 +1,48 @@
 import { db } from '@/lib/db';
-import { dailyLog, logEntry } from '@/lib/db/schema';
+import { dailyLog, logEntry, category } from '@/lib/db/schema';
 import { eq, between, desc, sql } from 'drizzle-orm';
 import { createId } from '@paralleldrive/cuid2';
 import { format } from 'date-fns';
+import type { CategoryBreakdown } from '@/types';
+
+function computeBreakdown(entries: Array<{ durationMinutes: number; category: { id: string; name: string; color: string; isFocusType: boolean } }>): CategoryBreakdown[] {
+  const map = new Map<string, CategoryBreakdown>();
+  for (const entry of entries) {
+    const hours = entry.durationMinutes / 60;
+    const cat = entry.category;
+    const existing = map.get(cat.id);
+    if (existing) {
+      existing.totalHours += hours;
+    } else {
+      map.set(cat.id, {
+        categoryId: cat.id,
+        name: cat.name,
+        color: cat.color,
+        isFocusType: cat.isFocusType,
+        totalHours: hours,
+      });
+    }
+  }
+  return Array.from(map.values()).sort((a, b) => b.totalHours - a.totalHours);
+}
 
 export async function getLogByDate(date: string) {
   const result = await db.query.dailyLog.findFirst({
     where: eq(dailyLog.logDate, date),
-    with: { entries: { orderBy: (entries, { asc }) => [asc(entries.sortOrder)] } },
+    with: {
+      entries: {
+        orderBy: (entries, { asc }) => [asc(entries.sortOrder)],
+        with: { category: true },
+      },
+    },
   });
-  return result ?? null;
+
+  if (!result) return null;
+
+  return {
+    ...result,
+    breakdown: computeBreakdown(result.entries),
+  };
 }
 
 export async function getOrCreateLog(date: string) {
@@ -17,11 +50,7 @@ export async function getOrCreateLog(date: string) {
   if (existing) return existing;
 
   const id = createId();
-  await db.insert(dailyLog).values({
-    id,
-    logDate: date,
-  });
-
+  await db.insert(dailyLog).values({ id, logDate: date });
   return getLogByDate(date);
 }
 
@@ -41,45 +70,6 @@ export async function listLogs(from?: string, to?: string) {
 export async function updateLog(date: string, data: { summary?: string; observations?: string }) {
   await db.update(dailyLog).set({ ...data, updatedAt: new Date().toISOString() }).where(eq(dailyLog.logDate, date));
   return getLogByDate(date);
-}
-
-export async function recalculateLogTotals(date: string) {
-  const log = await getLogByDate(date);
-  if (!log) return;
-
-  const entries = await db.query.logEntry.findMany({
-    where: eq(logEntry.dailyLogId, log.id),
-  });
-
-  const totals = entries.reduce(
-    (acc, entry) => {
-      const hours = entry.durationMinutes / 60;
-      switch (entry.category) {
-        case 'DEEP_WORK':
-          acc.totalDeepWork += hours;
-          break;
-        case 'SHALLOW_WORK':
-          acc.totalShallowWork += hours;
-          break;
-        case 'MEETING':
-          acc.totalMeetings += hours;
-          break;
-        case 'INTERRUPTION':
-          acc.totalInterruptions += hours;
-          break;
-        case 'PERSONAL_MISC':
-          acc.totalPersonalMisc += hours;
-          break;
-      }
-      return acc;
-    },
-    { totalDeepWork: 0, totalShallowWork: 0, totalMeetings: 0, totalInterruptions: 0, totalPersonalMisc: 0 }
-  );
-
-  await db
-    .update(dailyLog)
-    .set({ ...totals, updatedAt: new Date().toISOString() })
-    .where(eq(dailyLog.logDate, date));
 }
 
 export async function getLoggingStreak() {

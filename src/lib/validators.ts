@@ -1,12 +1,13 @@
 import { z } from 'zod';
 
-export const categorySchema = z.enum(['DEEP_WORK', 'SHALLOW_WORK', 'MEETING', 'INTERRUPTION', 'PERSONAL_MISC']);
+// Category IDs are non-empty strings (system IDs like 'sys_high_focus' or user-generated CUIDs)
+export const categoryIdSchema = z.string().min(1, 'Category is required');
 
 export const createEntrySchema = z.object({
   task: z.string().min(10, 'Task description must be at least 10 characters'),
   outcome: z.string().min(5, 'Outcome must be at least 5 characters'),
   durationMinutes: z.number().int().min(15, 'Minimum duration is 15 minutes').max(720, 'Maximum duration is 12 hours'),
-  category: categorySchema,
+  categoryId: categoryIdSchema,
   isReconstructed: z.boolean().optional().default(false),
 });
 
@@ -14,7 +15,7 @@ export const updateEntrySchema = z.object({
   task: z.string().min(10).optional(),
   outcome: z.string().min(5).optional(),
   durationMinutes: z.number().int().min(15).max(720).optional(),
-  category: categorySchema.optional(),
+  categoryId: categoryIdSchema.optional(),
   sortOrder: z.number().int().optional(),
 });
 
@@ -41,14 +42,14 @@ export const checkinRespondSchema = z.object({
 });
 
 export const settingsSchema = z.object({
-  deepWorkTargetHours: z.number().min(0).max(12).optional(),
+  highFocusTargetHours: z.number().min(0).max(12).optional(),
   interruptionWarningPct: z.number().min(0).max(100).optional(),
   expectedWorkHours: z.number().min(1).max(24).optional(),
 });
 
 export const createTodoSchema = z.object({
   task: z.string().min(5, 'Task must be at least 5 characters'),
-  category: categorySchema,
+  categoryId: categoryIdSchema,
   estimatedMinutes: z.number().int().min(15).max(720),
   priority: z.number().int().min(0).max(1).optional().default(0),
   tags: z.array(z.string()).optional(),
@@ -56,7 +57,7 @@ export const createTodoSchema = z.object({
 
 export const updateTodoSchema = z.object({
   task: z.string().min(5).optional(),
-  category: categorySchema.optional(),
+  categoryId: categoryIdSchema.optional(),
   estimatedMinutes: z.number().int().min(15).max(720).optional(),
   priority: z.number().int().min(0).max(1).optional(),
   tags: z.array(z.string()).optional(),
@@ -65,4 +66,20 @@ export const updateTodoSchema = z.object({
 export const completeTodoSchema = z.object({
   outcome: z.string().min(5, 'Outcome must be at least 5 characters'),
   actualMinutes: z.number().int().min(15).max(720).optional(),
+});
+
+export const createCategorySchema = z.object({
+  name: z.string().min(1, 'Name is required').max(50),
+  color: z.string().regex(/^#[0-9a-fA-F]{6}$/, 'Must be a hex color').optional().default('#6366f1'),
+  icon: z.string().max(10).optional(),
+  isFocusType: z.boolean().optional().default(false),
+  sortOrder: z.number().int().min(0).optional().default(0),
+});
+
+export const updateCategorySchema = z.object({
+  name: z.string().min(1).max(50).optional(),
+  color: z.string().regex(/^#[0-9a-fA-F]{6}$/).optional(),
+  icon: z.string().max(10).optional(),
+  isFocusType: z.boolean().optional(),
+  sortOrder: z.number().int().min(0).optional(),
 });

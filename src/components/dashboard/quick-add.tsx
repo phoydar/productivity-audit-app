@@ -3,17 +3,10 @@
 import { useState, useRef, useEffect } from 'react';
 import { Plus, X, Tag, Calendar } from 'lucide-react';
 import { format, subDays, parseISO, isAfter, startOfDay } from 'date-fns';
+import { useCategories } from '@/hooks/use-categories';
 
 const DURATION_OPTIONS = ['15m', '30m', '45m', '1h', '1.5h', '2h', '3h', '4h+'];
 const RETROACTIVE_LIMIT_DAYS = 30;
-const CATEGORIES = [
-  { value: 'DEEP_WORK', label: 'Deep Work', color: 'bg-primary-container' },
-  { value: 'SHALLOW_WORK', label: 'Shallow', color: 'bg-secondary-container' },
-  { value: 'MEETING', label: 'Meeting', color: 'bg-teal-500' },
-  { value: 'INTERRUPTION', label: 'Interruption', color: 'bg-error' },
-  { value: 'PERSONAL_MISC', label: 'Personal', color: 'bg-tertiary-container' },
-];
-
 const DEFAULT_TAGS = ['Code Review', 'Debugging', 'Architecture', 'Mentoring', 'Admin'];
 
 function parseDuration(label: string): number {
@@ -24,11 +17,14 @@ function parseDuration(label: string): number {
 }
 
 export function QuickAdd({ onEntryAdded, forDate }: { onEntryAdded?: () => void; forDate?: string }) {
+  const { categories } = useCategories();
+  const defaultCategoryId = categories[0]?.id ?? 'sys_high_focus';
+
   const [open, setOpen] = useState(false);
   const [task, setTask] = useState('');
   const [outcome, setOutcome] = useState('');
   const [duration, setDuration] = useState('1h');
-  const [category, setCategory] = useState('DEEP_WORK');
+  const [categoryId, setCategoryId] = useState(defaultCategoryId);
   const [targetDate, setTargetDate] = useState(forDate ?? format(new Date(), 'yyyy-MM-dd'));
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [customTags, setCustomTags] = useState<string[]>([]);
@@ -42,10 +38,16 @@ export function QuickAdd({ onEntryAdded, forDate }: { onEntryAdded?: () => void;
   const minDate = format(subDays(new Date(), RETROACTIVE_LIMIT_DAYS), 'yyyy-MM-dd');
   const isRetroactive = targetDate !== today;
 
-  // Sync if forDate prop changes (e.g. navigating between day pages)
   useEffect(() => {
     if (forDate) setTargetDate(forDate);
   }, [forDate]);
+
+  // Set default category once categories are loaded
+  useEffect(() => {
+    if (categories.length > 0 && categoryId === 'sys_high_focus') {
+      setCategoryId(categories[0].id);
+    }
+  }, [categories]);
 
   const allTags = [...DEFAULT_TAGS, ...customTags];
 
@@ -88,7 +90,6 @@ export function QuickAdd({ onEntryAdded, forDate }: { onEntryAdded?: () => void;
     setLoading(true);
     setError(null);
 
-    // Validate date is within the 30-day window
     const parsedTarget = parseISO(targetDate);
     const earliest = startOfDay(subDays(new Date(), RETROACTIVE_LIMIT_DAYS));
     if (isAfter(earliest, parsedTarget)) {
@@ -97,7 +98,6 @@ export function QuickAdd({ onEntryAdded, forDate }: { onEntryAdded?: () => void;
       return;
     }
 
-    // Prepend tags to the task if any are selected
     const tagPrefix = selectedTags.length > 0 ? `[${selectedTags.join(', ')}] ` : '';
     const fullTask = tagPrefix + task;
 
@@ -109,7 +109,7 @@ export function QuickAdd({ onEntryAdded, forDate }: { onEntryAdded?: () => void;
           task: fullTask,
           outcome,
           durationMinutes: parseDuration(duration),
-          category,
+          categoryId,
           isReconstructed: targetDate !== format(new Date(), 'yyyy-MM-dd'),
         }),
       });
@@ -117,14 +117,14 @@ export function QuickAdd({ onEntryAdded, forDate }: { onEntryAdded?: () => void;
         setTask('');
         setOutcome('');
         setDuration('1h');
-        setCategory('DEEP_WORK');
+        setCategoryId(categories[0]?.id ?? 'sys_high_focus');
         setSelectedTags([]);
         if (!forDate) setTargetDate(format(new Date(), 'yyyy-MM-dd'));
         setOpen(false);
         onEntryAdded?.();
       } else {
         const data = await res.json();
-        setError(data.issues?.[0] || data.error || 'Failed to add entry');
+        setError(data.issues?.[0]?.message ?? data.error ?? 'Failed to add entry');
       }
     } catch {
       setError('Network error');
@@ -154,7 +154,6 @@ export function QuickAdd({ onEntryAdded, forDate }: { onEntryAdded?: () => void;
         </button>
       </div>
 
-      {/* Date picker */}
       {!forDate && (
         <div className="flex items-center gap-3">
           <Calendar size={14} className="text-on-surface-variant shrink-0" />
@@ -260,19 +259,19 @@ export function QuickAdd({ onEntryAdded, forDate }: { onEntryAdded?: () => void;
       </div>
 
       {/* Categories */}
-      <div className="flex gap-2">
-        {CATEGORIES.map((cat) => (
+      <div className="flex flex-wrap gap-2">
+        {categories.map((cat) => (
           <button
-            key={cat.value}
-            onClick={() => setCategory(cat.value)}
+            key={cat.id}
+            onClick={() => setCategoryId(cat.id)}
             className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
-              category === cat.value
+              categoryId === cat.id
                 ? 'bg-on-surface text-surface'
                 : 'bg-surface-container text-on-surface-variant hover:bg-surface-container-high'
             }`}
           >
-            <span className={`w-2 h-2 rounded-full ${cat.color}`} />
-            {cat.label}
+            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: cat.color }} />
+            {cat.name}
           </button>
         ))}
       </div>

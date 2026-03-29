@@ -3,12 +3,13 @@
 import { useEffect, useState } from 'react';
 import { ListChecks, Clock, Brain } from 'lucide-react';
 import { format } from 'date-fns';
+import type { CategoryBreakdown } from '@/types';
 
 interface TodayData {
   entryCount: number;
   totalHours: number;
-  deepWorkHours: number;
-  deepWorkTarget: number;
+  focusHours: number;
+  focusTarget: number;
   expectedHours: number;
 }
 
@@ -22,18 +23,21 @@ export function TodayStatus() {
         const res = await fetch(`/api/logs/${today}`);
         if (res.ok) {
           const { log } = await res.json();
+          const breakdown: CategoryBreakdown[] = log?.breakdown ?? [];
+          const totalHours = breakdown.reduce((s, b) => s + b.totalHours, 0);
+          const focusHours = breakdown.filter((b) => b.isFocusType).reduce((s, b) => s + b.totalHours, 0);
           setData({
             entryCount: log?.entries?.length ?? 0,
-            totalHours: (log?.totalDeepWork ?? 0) + (log?.totalShallowWork ?? 0) + (log?.totalMeetings ?? 0) + (log?.totalInterruptions ?? 0) + (log?.totalPersonalMisc ?? 0),
-            deepWorkHours: log?.totalDeepWork ?? 0,
-            deepWorkTarget: 3,
+            totalHours,
+            focusHours,
+            focusTarget: 3,
             expectedHours: 8,
           });
         } else {
-          setData({ entryCount: 0, totalHours: 0, deepWorkHours: 0, deepWorkTarget: 3, expectedHours: 8 });
+          setData({ entryCount: 0, totalHours: 0, focusHours: 0, focusTarget: 3, expectedHours: 8 });
         }
       } catch {
-        setData({ entryCount: 0, totalHours: 0, deepWorkHours: 0, deepWorkTarget: 3, expectedHours: 8 });
+        setData({ entryCount: 0, totalHours: 0, focusHours: 0, focusTarget: 3, expectedHours: 8 });
       }
     }
     fetchToday();
@@ -49,7 +53,7 @@ export function TodayStatus() {
     );
   }
 
-  const deepWorkPct = data.deepWorkTarget > 0 ? Math.min((data.deepWorkHours / data.deepWorkTarget) * 100, 100) : 0;
+  const focusPct = data.focusTarget > 0 ? Math.min((data.focusHours / data.focusTarget) * 100, 100) : 0;
   const totalPct = data.expectedHours > 0 ? Math.min((data.totalHours / data.expectedHours) * 100, 100) : 0;
 
   return (
@@ -81,19 +85,19 @@ export function TodayStatus() {
 
       <div className="p-6 bg-surface-container-lowest rounded-lg">
         <div className="flex justify-between items-start mb-4">
-          <p className="text-sm font-medium text-on-surface-variant uppercase tracking-tighter">Deep Work</p>
+          <p className="text-sm font-medium text-on-surface-variant uppercase tracking-tighter">Focus Time</p>
           <Brain size={20} className="text-tertiary" />
         </div>
         <div className="flex items-baseline gap-2">
-          <span className="text-4xl font-black text-on-surface">{data.deepWorkHours.toFixed(1)}h</span>
-          <span className={`text-sm font-medium ${deepWorkPct >= 100 ? 'text-primary' : deepWorkPct >= 70 ? 'text-secondary-container' : 'text-error'}`}>
-            {deepWorkPct >= 100 ? 'Target Met' : `${deepWorkPct.toFixed(0)}% of target`}
+          <span className="text-4xl font-black text-on-surface">{data.focusHours.toFixed(1)}h</span>
+          <span className={`text-sm font-medium ${focusPct >= 100 ? 'text-primary' : focusPct >= 70 ? 'text-secondary-container' : 'text-error'}`}>
+            {focusPct >= 100 ? 'Target Met' : `${focusPct.toFixed(0)}% of target`}
           </span>
         </div>
         <div className="mt-4 h-1.5 w-full bg-surface-container rounded-full overflow-hidden">
           <div
-            className={`h-full transition-all duration-500 ${deepWorkPct >= 100 ? 'bg-primary' : deepWorkPct >= 70 ? 'bg-secondary-container' : 'bg-error'}`}
-            style={{ width: `${deepWorkPct}%` }}
+            className={`h-full transition-all duration-500 ${focusPct >= 100 ? 'bg-primary' : focusPct >= 70 ? 'bg-secondary-container' : 'bg-error'}`}
+            style={{ width: `${focusPct}%` }}
           />
         </div>
       </div>
