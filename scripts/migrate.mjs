@@ -77,11 +77,16 @@ async function migrate() {
     END $$
   `);
 
-  // ── PHASE 2: Drop the old PG enum types ────────────────────────────────────
-  // Now safe — no columns reference them anymore.
+  // ── PHASE 2: Drop the old PG enum type ─────────────────────────────────────
+  // A previous failed migration may have already created the 'category' TABLE
+  // while the 'category' TYPE still existed. Postgres won't drop the type while
+  // the table exists (same name = catalog dependency). Drop the table first so
+  // we can drop the type cleanly, then recreate the table in Phase 3.
   await client.query(`
     DO $$ BEGIN
       IF EXISTS (SELECT 1 FROM pg_type WHERE typname = 'category') THEN
+        -- Drop the category table if it was created by a previous partial run
+        DROP TABLE IF EXISTS category;
         DROP TYPE category;
       END IF;
     END $$
