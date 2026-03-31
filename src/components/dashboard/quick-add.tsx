@@ -181,12 +181,12 @@ export function QuickAdd({ onEntryAdded, forDate }: { onEntryAdded?: () => void;
         className="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline-variant/20 rounded-md text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all"
       />
 
-      <input
-        type="text"
+      <textarea
         placeholder="What was the result?"
         value={outcome}
         onChange={(e) => setOutcome(e.target.value)}
-        className="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline-variant/20 rounded-md text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all"
+        rows={3}
+        className="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline-variant/20 rounded-md text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all resize-y"
       />
 
       {/* Tags */}
