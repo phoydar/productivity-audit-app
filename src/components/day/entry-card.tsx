@@ -2,15 +2,23 @@
 
 import { useState } from 'react';
 import { Pencil, Trash2, Check, X, Calendar } from 'lucide-react';
+import { useCategories } from '@/hooks/use-categories';
+
+interface CategoryInfo {
+  id: string;
+  name: string;
+  color: string;
+  isFocusType: boolean;
+}
 
 interface EntryCardProps {
   id: string;
   task: string;
   outcome: string;
   durationMinutes: number;
-  category: string;
+  category: CategoryInfo;
   date: string;
-  isReconstructed?: number;
+  isReconstructed?: boolean | number;
   onEdit?: (id: string, data: EditPayload) => Promise<boolean>;
   onDelete?: (id: string) => void;
 }
@@ -19,25 +27,9 @@ export interface EditPayload {
   task?: string;
   outcome?: string;
   durationMinutes?: number;
-  category?: string;
+  categoryId?: string;
   date?: string;
 }
-
-const CATEGORY_STYLES: Record<string, { label: string; border: string; badge: string; text: string }> = {
-  DEEP_WORK: { label: 'Deep Work', border: 'border-l-primary-container', badge: 'bg-primary-container/10 text-primary-container', text: 'text-primary-container' },
-  SHALLOW_WORK: { label: 'Shallow Work', border: 'border-l-secondary-container', badge: 'bg-secondary-container/10 text-secondary-container', text: 'text-secondary-container' },
-  MEETING: { label: 'Meeting', border: 'border-l-teal-500', badge: 'bg-teal-500/10 text-teal-600', text: 'text-teal-600' },
-  INTERRUPTION: { label: 'Interruption', border: 'border-l-error', badge: 'bg-error/10 text-error', text: 'text-error' },
-  PERSONAL_MISC: { label: 'Personal', border: 'border-l-tertiary-container', badge: 'bg-tertiary-container/10 text-tertiary-container', text: 'text-tertiary-container' },
-};
-
-const CATEGORIES = [
-  { value: 'DEEP_WORK', label: 'Deep Work', color: 'bg-primary-container' },
-  { value: 'SHALLOW_WORK', label: 'Shallow', color: 'bg-secondary-container' },
-  { value: 'MEETING', label: 'Meeting', color: 'bg-teal-500' },
-  { value: 'INTERRUPTION', label: 'Interruption', color: 'bg-error' },
-  { value: 'PERSONAL_MISC', label: 'Personal', color: 'bg-tertiary-container' },
-];
 
 const DURATION_OPTIONS = ['15m', '30m', '45m', '1h', '1.5h', '2h', '3h', '4h+'];
 
@@ -64,13 +56,13 @@ function minutesToDurationLabel(minutes: number): string {
 }
 
 export function EntryCard({ id, task, outcome, durationMinutes, category, date, isReconstructed, onEdit, onDelete }: EntryCardProps) {
-  const style = CATEGORY_STYLES[category] ?? CATEGORY_STYLES.DEEP_WORK;
+  const { categories } = useCategories();
 
   const [editing, setEditing] = useState(false);
   const [editTask, setEditTask] = useState(task);
   const [editOutcome, setEditOutcome] = useState(outcome);
   const [editDuration, setEditDuration] = useState(minutesToDurationLabel(durationMinutes));
-  const [editCategory, setEditCategory] = useState(category);
+  const [editCategoryId, setEditCategoryId] = useState(category.id);
   const [editDate, setEditDate] = useState(date);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -79,7 +71,7 @@ export function EntryCard({ id, task, outcome, durationMinutes, category, date, 
     setEditTask(task);
     setEditOutcome(outcome);
     setEditDuration(minutesToDurationLabel(durationMinutes));
-    setEditCategory(category);
+    setEditCategoryId(category.id);
     setEditDate(date);
     setError(null);
     setEditing(true);
@@ -100,7 +92,7 @@ export function EntryCard({ id, task, outcome, durationMinutes, category, date, 
     if (editOutcome !== outcome) payload.outcome = editOutcome;
     const newMinutes = parseDuration(editDuration);
     if (newMinutes !== durationMinutes) payload.durationMinutes = newMinutes;
-    if (editCategory !== category) payload.category = editCategory;
+    if (editCategoryId !== category.id) payload.categoryId = editCategoryId;
     if (editDate !== date) payload.date = editDate;
 
     if (Object.keys(payload).length === 0) {
@@ -118,11 +110,14 @@ export function EntryCard({ id, task, outcome, durationMinutes, category, date, 
     }
   }
 
-  if (editing) {
-    const editStyle = CATEGORY_STYLES[editCategory] ?? CATEGORY_STYLES.DEEP_WORK;
+  const editingCategory = categories.find((c) => c.id === editCategoryId) ?? category;
 
+  if (editing) {
     return (
-      <div className={`bg-surface-container-lowest rounded-lg border-l-4 ${editStyle.border} p-5 space-y-3`}>
+      <div
+        className="bg-surface-container-lowest rounded-lg border-l-4 p-5 space-y-3"
+        style={{ borderLeftColor: editingCategory.color }}
+      >
         <div className="flex justify-between items-center">
           <span className="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Edit Entry</span>
           <button onClick={cancelEditing} className="text-outline hover:text-on-surface transition-colors">
@@ -158,7 +153,6 @@ export function EntryCard({ id, task, outcome, durationMinutes, category, date, 
           />
         </div>
 
-        {/* Duration */}
         <div className="flex flex-wrap gap-2">
           {DURATION_OPTIONS.map((opt) => (
             <button
@@ -175,20 +169,19 @@ export function EntryCard({ id, task, outcome, durationMinutes, category, date, 
           ))}
         </div>
 
-        {/* Category */}
         <div className="flex flex-wrap gap-2">
-          {CATEGORIES.map((cat) => (
+          {categories.map((cat) => (
             <button
-              key={cat.value}
-              onClick={() => setEditCategory(cat.value)}
+              key={cat.id}
+              onClick={() => setEditCategoryId(cat.id)}
               className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
-                editCategory === cat.value
+                editCategoryId === cat.id
                   ? 'bg-on-surface text-surface'
                   : 'bg-surface-container text-on-surface-variant hover:bg-surface-container-high'
               }`}
             >
-              <span className={`w-2 h-2 rounded-full ${cat.color}`} />
-              {cat.label}
+              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: cat.color }} />
+              {cat.name}
             </button>
           ))}
         </div>
@@ -216,13 +209,19 @@ export function EntryCard({ id, task, outcome, durationMinutes, category, date, 
   }
 
   return (
-    <div className={`group bg-surface-container-lowest rounded-lg border-l-4 ${style.border} p-5 hover:shadow-[0_0_32px_rgba(0,74,198,0.06)] transition-all`}>
+    <div
+      className="group bg-surface-container-lowest rounded-lg border-l-4 p-5 hover:shadow-[0_0_32px_rgba(0,74,198,0.06)] transition-all"
+      style={{ borderLeftColor: category.color }}
+    >
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3 mb-1">
             <h4 className="text-sm font-semibold text-on-surface truncate">{task}</h4>
-            <span className={`text-xs px-2 py-0.5 rounded font-medium whitespace-nowrap ${style.badge}`}>
-              {style.label}
+            <span
+              className="text-xs px-2 py-0.5 rounded font-medium whitespace-nowrap text-white"
+              style={{ backgroundColor: category.color }}
+            >
+              {category.name}
             </span>
           </div>
           <p className="text-sm text-on-surface-variant leading-relaxed mb-3">{outcome}</p>
@@ -230,7 +229,7 @@ export function EntryCard({ id, task, outcome, durationMinutes, category, date, 
             <span className="text-xs font-bold text-on-surface-variant bg-surface-container px-2 py-1 rounded">
               {formatDuration(durationMinutes)}
             </span>
-            {isReconstructed === 1 && (
+            {(isReconstructed === 1 || isReconstructed === true) && (
               <span className="text-[10px] uppercase tracking-wider text-outline font-medium">Reconstructed</span>
             )}
           </div>

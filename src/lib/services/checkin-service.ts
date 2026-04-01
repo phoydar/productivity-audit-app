@@ -1,7 +1,7 @@
 import { CHECKIN_PROMPTS } from '@/lib/constants';
 import { createEntry } from './entry-service';
 import { format } from 'date-fns';
-import type { CheckinState, CategoryType } from '@/types';
+import type { CheckinState } from '@/types';
 
 // In-memory state for active check-in sessions (single-user app)
 let activeCheckin: CheckinState | null = null;

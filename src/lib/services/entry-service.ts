@@ -3,14 +3,13 @@ import { dailyLog, logEntry } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
 import { createId } from '@paralleldrive/cuid2';
 import { checkEntryQuality } from '@/lib/quality';
-import { recalculateLogTotals, getOrCreateLog } from './log-service';
-import type { CategoryType } from '@/types';
+import { getOrCreateLog } from './log-service';
 
 interface CreateEntryInput {
   task: string;
   outcome: string;
   durationMinutes: number;
-  category: CategoryType;
+  categoryId: string;
   isReconstructed?: boolean;
 }
 
@@ -18,7 +17,7 @@ interface UpdateEntryInput {
   task?: string;
   outcome?: string;
   durationMinutes?: number;
-  category?: CategoryType;
+  categoryId?: string;
   sortOrder?: number;
   date?: string;
 }
@@ -44,14 +43,15 @@ export async function createEntry(date: string, input: CreateEntryInput) {
     task: input.task,
     outcome: input.outcome,
     durationMinutes: input.durationMinutes,
-    category: input.category,
+    categoryId: input.categoryId,
     sortOrder: nextOrder,
     isReconstructed: input.isReconstructed ?? false,
   });
 
-  await recalculateLogTotals(date);
-
-  const entry = await db.query.logEntry.findFirst({ where: eq(logEntry.id, id) });
+  const entry = await db.query.logEntry.findFirst({
+    where: eq(logEntry.id, id),
+    with: { category: true },
+  });
   return { success: true as const, entry };
 }
 
@@ -72,7 +72,7 @@ export async function updateEntry(id: string, input: UpdateEntryInput) {
   if (input.task !== undefined) updateData.task = input.task;
   if (input.outcome !== undefined) updateData.outcome = input.outcome;
   if (input.durationMinutes !== undefined) updateData.durationMinutes = input.durationMinutes;
-  if (input.category !== undefined) updateData.category = input.category;
+  if (input.categoryId !== undefined) updateData.categoryId = input.categoryId;
   if (input.sortOrder !== undefined) updateData.sortOrder = input.sortOrder;
 
   // Handle date change: move entry to a different daily log
@@ -95,21 +95,10 @@ export async function updateEntry(id: string, input: UpdateEntryInput) {
 
   await db.update(logEntry).set(updateData).where(eq(logEntry.id, id));
 
-  const updated = await db.query.logEntry.findFirst({ where: eq(logEntry.id, id) });
-
-  // Recalculate totals for the new log
-  if (updated) {
-    const newLog = await db.query.dailyLog.findFirst({
-      where: eq(dailyLog.id, updated.dailyLogId),
-    });
-    if (newLog) await recalculateLogTotals(newLog.logDate);
-  }
-
-  // Also recalculate the old log if the entry moved
-  if (input.date && oldDate && input.date !== oldDate) {
-    await recalculateLogTotals(oldDate);
-  }
-
+  const updated = await db.query.logEntry.findFirst({
+    where: eq(logEntry.id, id),
+    with: { category: true },
+  });
   return { success: true as const, entry: updated };
 }
 
@@ -118,12 +107,6 @@ export async function deleteEntry(id: string) {
   if (!existing) return false;
 
   await db.delete(logEntry).where(eq(logEntry.id, id));
-
-  const log = await db.query.dailyLog.findFirst({
-    where: eq(dailyLog.id, existing.dailyLogId),
-  });
-  if (log) await recalculateLogTotals(log.logDate);
-
   return true;
 }
 
@@ -136,5 +119,6 @@ export async function getEntriesForDate(date: string) {
   return db.query.logEntry.findMany({
     where: eq(logEntry.dailyLogId, log.id),
     orderBy: (entries, { asc }) => [asc(entries.sortOrder)],
+    with: { category: true },
   });
 }

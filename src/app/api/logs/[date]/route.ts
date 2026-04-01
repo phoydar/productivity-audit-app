@@ -22,13 +22,10 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           logDate: date,
           summary: null,
           observations: null,
-          totalDeepWork: 0,
-          totalShallowWork: 0,
-          totalInterruptions: 0,
-          totalPersonalMisc: 0,
           isReconstructed: false,
           generatedAt: null,
           entries: [],
+          breakdown: [],
         },
       });
     }
