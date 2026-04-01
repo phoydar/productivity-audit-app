@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Pencil, Trash2, Check, X } from 'lucide-react';
+import { Pencil, Trash2, Check, X, Calendar } from 'lucide-react';
 
 interface EntryCardProps {
   id: string;
@@ -9,6 +9,7 @@ interface EntryCardProps {
   outcome: string;
   durationMinutes: number;
   category: string;
+  date: string;
   isReconstructed?: number;
   onEdit?: (id: string, data: EditPayload) => Promise<boolean>;
   onDelete?: (id: string) => void;
@@ -19,6 +20,7 @@ export interface EditPayload {
   outcome?: string;
   durationMinutes?: number;
   category?: string;
+  date?: string;
 }
 
 const CATEGORY_STYLES: Record<string, { label: string; border: string; badge: string; text: string }> = {
@@ -61,7 +63,7 @@ function minutesToDurationLabel(minutes: number): string {
   return map[minutes] ?? '1h';
 }
 
-export function EntryCard({ id, task, outcome, durationMinutes, category, isReconstructed, onEdit, onDelete }: EntryCardProps) {
+export function EntryCard({ id, task, outcome, durationMinutes, category, date, isReconstructed, onEdit, onDelete }: EntryCardProps) {
   const style = CATEGORY_STYLES[category] ?? CATEGORY_STYLES.DEEP_WORK;
 
   const [editing, setEditing] = useState(false);
@@ -69,6 +71,7 @@ export function EntryCard({ id, task, outcome, durationMinutes, category, isReco
   const [editOutcome, setEditOutcome] = useState(outcome);
   const [editDuration, setEditDuration] = useState(minutesToDurationLabel(durationMinutes));
   const [editCategory, setEditCategory] = useState(category);
+  const [editDate, setEditDate] = useState(date);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -77,6 +80,7 @@ export function EntryCard({ id, task, outcome, durationMinutes, category, isReco
     setEditOutcome(outcome);
     setEditDuration(minutesToDurationLabel(durationMinutes));
     setEditCategory(category);
+    setEditDate(date);
     setError(null);
     setEditing(true);
   }
@@ -97,6 +101,7 @@ export function EntryCard({ id, task, outcome, durationMinutes, category, isReco
     const newMinutes = parseDuration(editDuration);
     if (newMinutes !== durationMinutes) payload.durationMinutes = newMinutes;
     if (editCategory !== category) payload.category = editCategory;
+    if (editDate !== date) payload.date = editDate;
 
     if (Object.keys(payload).length === 0) {
       setEditing(false);
@@ -141,6 +146,17 @@ export function EntryCard({ id, task, outcome, durationMinutes, category, isReco
           placeholder="What was the result?"
           className="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline-variant/20 rounded-md text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all"
         />
+
+        {/* Date */}
+        <div className="flex items-center gap-2">
+          <Calendar size={14} className="text-on-surface-variant" />
+          <input
+            type="date"
+            value={editDate}
+            onChange={(e) => setEditDate(e.target.value)}
+            className="px-3 py-2 bg-surface-container-lowest border border-outline-variant/20 rounded-md text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all"
+          />
+        </div>
 
         {/* Duration */}
         <div className="flex flex-wrap gap-2">

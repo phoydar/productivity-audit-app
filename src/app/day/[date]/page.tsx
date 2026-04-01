@@ -86,7 +86,11 @@ export default function DayDetailPage({ params }: { params: Promise<{ date: stri
         body: JSON.stringify(data),
       });
       if (res.ok) {
-        await fetchLog();
+        if (data.date && data.date !== date) {
+          router.push(`/day/${data.date}`);
+        } else {
+          await fetchLog();
+        }
         return true;
       }
       return false;
@@ -155,6 +159,7 @@ export default function DayDetailPage({ params }: { params: Promise<{ date: stri
                   <EntryCard
                     key={entry.id}
                     {...entry}
+                    date={date}
                     onEdit={handleEdit}
                     onDelete={handleDelete}
                   />

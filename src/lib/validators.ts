@@ -16,6 +16,7 @@ export const updateEntrySchema = z.object({
   durationMinutes: z.number().int().min(15).max(720).optional(),
   category: categorySchema.optional(),
   sortOrder: z.number().int().optional(),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date must be YYYY-MM-DD format').optional(),
 });
 
 export const updateLogSchema = z.object({

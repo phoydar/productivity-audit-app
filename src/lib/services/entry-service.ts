@@ -20,6 +20,7 @@ interface UpdateEntryInput {
   durationMinutes?: number;
   category?: CategoryType;
   sortOrder?: number;
+  date?: string;
 }
 
 export async function createEntry(date: string, input: CreateEntryInput) {
@@ -74,14 +75,39 @@ export async function updateEntry(id: string, input: UpdateEntryInput) {
   if (input.category !== undefined) updateData.category = input.category;
   if (input.sortOrder !== undefined) updateData.sortOrder = input.sortOrder;
 
+  // Handle date change: move entry to a different daily log
+  const oldLog = await db.query.dailyLog.findFirst({
+    where: eq(dailyLog.id, existing.dailyLogId),
+  });
+  const oldDate = oldLog?.logDate;
+
+  if (input.date && oldDate && input.date !== oldDate) {
+    const targetLog = await getOrCreateLog(input.date);
+    if (!targetLog) throw new Error('Failed to create daily log for target date');
+    updateData.dailyLogId = targetLog.id;
+
+    // Set sort order to end of target day's entries
+    const targetEntries = await db.query.logEntry.findMany({
+      where: eq(logEntry.dailyLogId, targetLog.id),
+    });
+    updateData.sortOrder = targetEntries.length;
+  }
+
   await db.update(logEntry).set(updateData).where(eq(logEntry.id, id));
 
   const updated = await db.query.logEntry.findFirst({ where: eq(logEntry.id, id) });
+
+  // Recalculate totals for the new log
   if (updated) {
-    const log = await db.query.dailyLog.findFirst({
+    const newLog = await db.query.dailyLog.findFirst({
       where: eq(dailyLog.id, updated.dailyLogId),
     });
-    if (log) await recalculateLogTotals(log.logDate);
+    if (newLog) await recalculateLogTotals(newLog.logDate);
+  }
+
+  // Also recalculate the old log if the entry moved
+  if (input.date && oldDate && input.date !== oldDate) {
+    await recalculateLogTotals(oldDate);
   }
 
   return { success: true as const, entry: updated };
