@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Plus, X, Tag, Calendar } from 'lucide-react';
+import { MarkdownEditor } from '@/components/markdown-editor';
 import { format, subDays, parseISO, isAfter, startOfDay } from 'date-fns';
 import { useCategories } from '@/hooks/use-categories';
 
@@ -181,12 +182,11 @@ export function QuickAdd({ onEntryAdded, forDate }: { onEntryAdded?: () => void;
         className="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline-variant/20 rounded-md text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all"
       />
 
-      <textarea
-        placeholder="What was the result?"
+      <MarkdownEditor
         value={outcome}
-        onChange={(e) => setOutcome(e.target.value)}
-        rows={3}
-        className="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline-variant/20 rounded-md text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all resize-y"
+        onChange={setOutcome}
+        placeholder="What was the result? Use **bold**, *italic*, or - bullet points."
+        minHeight={100}
       />
 
       {/* Tags */}

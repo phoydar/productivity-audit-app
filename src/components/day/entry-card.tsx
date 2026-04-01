@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Pencil, Trash2, Check, X, Calendar } from 'lucide-react';
 import { useCategories } from '@/hooks/use-categories';
+import { MarkdownEditor, MarkdownDisplay } from '@/components/markdown-editor';
 
 interface CategoryInfo {
   id: string;
@@ -134,12 +135,11 @@ export function EntryCard({ id, task, outcome, durationMinutes, category, date, 
           autoFocus
         />
 
-        <input
-          type="text"
+        <MarkdownEditor
           value={editOutcome}
-          onChange={(e) => setEditOutcome(e.target.value)}
+          onChange={setEditOutcome}
           placeholder="What was the result?"
-          className="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline-variant/20 rounded-md text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all"
+          minHeight={100}
         />
 
         {/* Date */}
@@ -224,7 +224,7 @@ export function EntryCard({ id, task, outcome, durationMinutes, category, date, 
               {category.name}
             </span>
           </div>
-          <p className="text-sm text-on-surface-variant leading-relaxed mb-3">{outcome}</p>
+          <MarkdownDisplay content={outcome} className="mb-3" />
           <div className="flex items-center gap-3">
             <span className="text-xs font-bold text-on-surface-variant bg-surface-container px-2 py-1 rounded">
               {formatDuration(durationMinutes)}
