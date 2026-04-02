@@ -1,5 +1,6 @@
 # Railway Deploy Handoff — productivity-audit
 
+
 ## Status: BLOCKED on `server.js` not found at runtime
 
 The Next.js build succeeds. The Docker image builds. But the container crashes on startup because `node server.js` can't find the file.
