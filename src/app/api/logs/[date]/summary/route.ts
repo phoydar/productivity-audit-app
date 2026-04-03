@@ -5,7 +5,7 @@ import { getSummary, generateSummary } from '@/lib/services/summary-service';
 import { dateParamSchema } from '@/lib/validators';
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ date: string }> }) {
-  const authError = checkAuth(request);
+  const authError = await checkAuth(request);
   if (authError) return authError;
   try {
     const { date } = await params;
@@ -24,7 +24,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 }
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ date: string }> }) {
-  const authError = checkAuth(request);
+  const authError = await checkAuth(request);
   if (authError) return authError;
   try {
     const { date } = await params;

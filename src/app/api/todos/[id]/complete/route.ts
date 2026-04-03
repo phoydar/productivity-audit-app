@@ -5,7 +5,7 @@ import { completeTodo } from '@/lib/services/todo-service';
 import { completeTodoSchema } from '@/lib/validators';
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const authError = checkAuth(request);
+  const authError = await checkAuth(request);
   if (authError) return authError;
   try {
     const { id } = await params;

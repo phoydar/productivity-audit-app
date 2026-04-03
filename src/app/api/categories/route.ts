@@ -5,7 +5,7 @@ import { getCategories, createCategory } from '@/lib/services/category-service';
 import { createCategorySchema } from '@/lib/validators';
 
 export async function GET(request: NextRequest) {
-  const authError = checkAuth(request);
+  const authError = await checkAuth(request);
   if (authError) return authError;
   try {
     const categories = await getCategories();
@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const authError = checkAuth(request);
+  const authError = await checkAuth(request);
   if (authError) return authError;
   try {
     const body = await request.json();

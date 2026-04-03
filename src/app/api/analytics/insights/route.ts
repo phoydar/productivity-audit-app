@@ -4,7 +4,7 @@ import { checkAuth } from '@/lib/auth';
 import { getInsights } from '@/lib/services/insight-service';
 
 export async function GET(request: NextRequest) {
-  const authError = checkAuth(request);
+  const authError = await checkAuth(request);
   if (authError) return authError;
   try {
     const { searchParams } = new URL(request.url);

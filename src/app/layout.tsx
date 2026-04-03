@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
+import { SessionProvider } from "next-auth/react";
 import "./globals.css";
-import { Sidebar } from "@/components/sidebar";
+import { AuthenticatedShell } from "@/components/authenticated-shell";
 
 export const metadata: Metadata = {
   title: "Productivity Audit",
@@ -15,10 +16,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-        <Sidebar streak={0} />
-        <main className="ml-64 min-h-screen">
-          {children}
-        </main>
+        <SessionProvider>
+          <AuthenticatedShell>{children}</AuthenticatedShell>
+        </SessionProvider>
       </body>
     </html>
   );

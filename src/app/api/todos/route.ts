@@ -5,7 +5,7 @@ import { createTodo, getTodos } from '@/lib/services/todo-service';
 import { createTodoSchema } from '@/lib/validators';
 
 export async function GET(request: NextRequest) {
-  const authError = checkAuth(request);
+  const authError = await checkAuth(request);
   if (authError) return authError;
   try {
     const status = request.nextUrl.searchParams.get('status') as 'PENDING' | 'COMPLETED' | 'CANCELLED' | null;
@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const authError = checkAuth(request);
+  const authError = await checkAuth(request);
   if (authError) return authError;
   try {
     const body = await request.json();

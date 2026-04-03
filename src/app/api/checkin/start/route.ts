@@ -5,7 +5,7 @@ import { startCheckin } from '@/lib/services/checkin-service';
 import { checkinStartSchema } from '@/lib/validators';
 
 export async function POST(request: NextRequest) {
-  const authError = checkAuth(request);
+  const authError = await checkAuth(request);
   if (authError) return authError;
   try {
     const body = await request.json().catch(() => ({}));

@@ -21,7 +21,7 @@ async function fetchSettings() {
 }
 
 export async function GET(request: NextRequest) {
-  const authError = checkAuth(request);
+  const authError = await checkAuth(request);
   if (authError) return authError;
   try {
     return NextResponse.json({ settings: await fetchSettings() });
@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
-  const authError = checkAuth(request);
+  const authError = await checkAuth(request);
   if (authError) return authError;
   try {
     const body = await request.json();
